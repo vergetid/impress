@@ -1,0 +1,28 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX vocab: <http://localhost:2020/resource/vocab/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX map: <http://localhost:2020/resource/#>
+PREFIX db: <http://localhost:2020/resource/>
+
+SELECT ?report ?maxDate (sum(?bedsAvailable) as ?available) (sum(?bedsDeployed) as ?deployed) (sum(?bedsSupplementary) as ?supplementary)
+WHERE {
+       ?hospital vocab:dbo_RES_Hospital_HospitalName "[hospitalName]".
+       ?report vocab:dbo_RES_Hospital_BedsReport_HospitalID ?hospital.
+       ?reportDetails 
+	        vocab:dbo_RES_Hospital_BedsReportDetail_BedsReportID ?report;
+            vocab:dbo_RES_Hospital_BedsReportDetail_KlinikiCode ?clinicCode;
+            vocab:dbo_RES_Hospital_BedsReportDetail_BedsAvailable ?bedsAvailable;
+            vocab:dbo_RES_Hospital_BedsReportDetail_BedsDeployed ?bedsDeployed;
+            vocab:dbo_RES_Hospital_BedsReportDetail_BedsSupplementary ?bedsSupplementary.
+       ?report vocab:dbo_RES_Hospital_BedsReport_Date ?maxDate. 
+       {
+          	SELECT   (max(?date) as ?maxDate) WHERE {
+             	?hospital vocab:dbo_RES_Hospital_HospitalName "[hospitalName]".
+             	?report vocab:dbo_RES_Hospital_BedsReport_HospitalID ?hospital.
+             	?report vocab:dbo_RES_Hospital_BedsReport_Date ?date.
+          }
+       }
+}
+GROUP BY ?report ?maxDate
