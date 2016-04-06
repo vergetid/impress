@@ -5,6 +5,7 @@
  */
 package eu.impress.repository.util;
 
+import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -24,7 +25,8 @@ public class EDXLlib {
     //constructs EDXLDEmessage
     public static String DEEncapsulation(String DEString, String EDXLHave) throws DatatypeConfigurationException{
         
-        String finalDEString = DEString.replace("<xmlContent/>", "<xmlContent>"+EDXLHave+"</xmlContent>");
+        EDXLHave = escapeHtml(EDXLHave);                
+        String finalDEString = DEString.replace("<xmlContent/>", "<xmlContent><embeddedXMLContent><any>"+EDXLHave+"</any></embeddedXMLContent></xmlContent>");
         return finalDEString;
     
     }

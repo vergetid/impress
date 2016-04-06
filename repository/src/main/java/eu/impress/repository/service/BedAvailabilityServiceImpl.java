@@ -12,6 +12,7 @@ import eu.impress.repository.dao.BedAvailabilityService;
 import eu.impress.repository.dao.BedsService;
 import eu.impress.repository.model.BedStats;
 import java.io.StringWriter;
+import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -125,25 +126,28 @@ public class BedAvailabilityServiceImpl implements BedAvailabilityService{
     
     }
     
-    
-    
-//add this cahnges to marshaller in order to unescape charasters
-    //import com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler;
-    
-    //jaxbMarshaller.setProperty("jaxb.encoding", "Unicode");
-    //jaxbMarshaller.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "utf-8");
-    //CharacterEscapeHandler escapeHandler = new JaxbCharacterEscapeHandler();
-    //jaxbMarshaller.setProperty(CharacterEscapeHandler.class.getName(), escapeHandler);
-    
-    /*class JaxbCharacterEscapeHandler implements CharacterEscapeHandler {
+    @Override
+    public String getBedTypeAvailablityHAVE(String hospitalname) {
+        String hospitalstatushave;
+        List<eu.impress.repository.model.BedStats> bedStatsList = bedService.getHospitalAvailableBedTypes(hospitalname);
+        HospitalStatus hospitalStatus = beansTransformation.BedTypesStatstoHAVE(bedStatsList);
+                
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(HospitalStatus.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+            StringWriter sw = new StringWriter();
+            jaxbMarshaller.marshal(hospitalStatus, sw);
+            hospitalstatushave = sw.toString();
 
-        public void escape(char[] buf, int start, int len, boolean isAttValue, Writer out) throws IOException {
-            for (int i = start; i < start + len; i++) {
-                char ch = buf[i];
-                out.write(ch);
-            }
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return "Error Marshalling XML Object";
         }
 
-}*/
+        return hospitalstatushave;
+
+    }
     
 }

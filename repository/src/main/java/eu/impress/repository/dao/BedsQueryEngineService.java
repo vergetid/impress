@@ -6,6 +6,7 @@
 package eu.impress.repository.dao;
 
 import eu.impress.repository.model.BedStats;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,5 +18,5 @@ public interface BedsQueryEngineService {
     
     public BedStats findHospitalAvailableBedsAllClinics(String hospital);
     public BedStats findAvailableBedsByClinic(Integer clinicId);
-    
+    public List<BedStats> findHospitalAvailableBedsTypes(String hospital);    
 }

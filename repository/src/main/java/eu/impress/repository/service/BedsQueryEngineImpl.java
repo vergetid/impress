@@ -107,6 +107,58 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
 			return null;
 		}		
 	}
+
+	public List<BedStats> findHospitalAvailableBedsTypes(String hospital) {
+		ApplicationContext appContext = new ClassPathXmlApplicationContext();
+		org.springframework.core.io.Resource resource = appContext.getResource(
+				"classpath:sparqlQueries/BedsTypesAvailabilityQuery");
+                
+                List<BedStats> bedStatsList = new ArrayList<BedStats>();
+                
+		try 
+                {
+                  InputStream is = resource.getInputStream();
+	          BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                          
+	          String line;
+	          queryTemplate="";
+                  
+	          while ((line = br.readLine()) != null)
+                  {
+	             queryTemplate+=line+"\n";
+	       	  }
+                  
+	          br.close();                  
+		} catch (IOException e1) {			
+			e1.printStackTrace();
+			return null;
+		}
+
+		List<String> params = new ArrayList<String>();
+		params.add(hospital);params.add(hospital);
+		String sparqlQuery = prepareQuery(queryTemplate, params);
+		System.out.println(sparqlQuery);
+		Query query = QueryFactory.create(sparqlQuery);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, query);		
+		ResultSet results = qexec.execSelect();
+                
+		while(results.hasNext())
+		{
+		  QuerySolution soln = results.next();
+
+		  Literal clinicTypeHospital = soln.getLiteral("clinicTypeHospital") ;   // Get a result variable - must be a literal
+		  Literal bedsAvailable = soln.getLiteral("bedsAvailable");
+		  BedStats bedStats = new BedStats();
+		  bedStats.setClinicType(clinicTypeHospital.getString());
+		  bedStats.setAvailabeBeds(bedsAvailable.getInt());
+                  
+                  bedStatsList.add(bedStats);
+                }                  
+                  
+		return bedStatsList;
+	}			
+        
+        
 	private String prepareQuery(String query, List<String> params) {
 		Pattern pattern = Pattern.compile("\\[(.+?)\\]");
 		Matcher matcher = pattern.matcher(query);

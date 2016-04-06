@@ -9,7 +9,17 @@ public class BedStats {
 	private Integer availabeBeds;
 	private Integer supplementaryBeds;
 	private Integer deployedBeds;
+        private String clinicType;        
 	private Date lastDate;
+
+        public String getClinicType() {
+            return clinicType;
+        }
+
+        public void setClinicType(String clinicType) {
+            this.clinicType = clinicType;
+        }
+                
 	public Integer getSupplementaryBeds() {
 		return supplementaryBeds;
 	}
