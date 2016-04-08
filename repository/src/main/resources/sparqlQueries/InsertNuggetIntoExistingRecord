@@ -1,0 +1,13 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+INSERT DATA 
+{ 
+ graph <http://test/impress/2>
+ {
+    <http://www.impress.eu/pseudoPatientRecord/bag/[pseudoid]>
+      rdf:li  "[nugget_path]";
+      dc:date "[timestamp]"^^xsd:dateTime.
+ }
+}
