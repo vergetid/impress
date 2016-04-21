@@ -9,6 +9,7 @@
         <module>app</module>
         <module>repository</module>
         <module>rest-api</module>
+        <module>logevo-iteration</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
