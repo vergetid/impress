@@ -1,5 +1,7 @@
 package eu.impress.repository.service;
 
+import eu.impress.logevo.dao.PatientDAO;
+import eu.impress.logevo.model.Patient;
 import eu.impress.repository.dao.NuggetService;
 import eu.impress.repository.model.NuggetDescription;
 import eu.impress.util.Util;
@@ -7,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,6 +27,7 @@ import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -38,6 +42,20 @@ public class NuggetServiceImpl implements NuggetService
     @Value("${sparql.endpoint}")
     private String sparqlEndpoint;
     
+    @Autowired
+    PatientDAO patientDAO;
+    
+    @Override 
+    public Patient getPatientStateByPatientID(String patientID) {
+    	try {
+			return patientDAO.findPatientbyID(patientID);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
     @Override
     public NuggetDescription retrieveNuggetByPatientPseudoID(String patientPseudoID)
     {
@@ -76,7 +94,7 @@ public class NuggetServiceImpl implements NuggetService
             Literal time = soln.getLiteral("time");             
             NuggetDescription nugget = new NuggetDescription();
             nugget.setPatientPseudoID(patientPseudoID);
-            nugget.setContents(nuggetlink.getString());
+            nugget.setNugget(nuggetlink.getString());
             //nugget.setTimeStamp(time.getString());
             return nugget;
         } else {
@@ -123,8 +141,8 @@ public class NuggetServiceImpl implements NuggetService
             params.add(nugget.getPatientPseudoID());
             params.add(nugget.getPatientPseudoID());
             params.add(nugget.getPatientPseudoID());        
-            params.add(nugget.getContents());
-            params.add(nugget.getTimeStamp().toString());
+            params.add(nugget.getNugget());
+            params.add(nugget.getEpoch());
             String sparulQuery = Util.prepareQuery(queryTemplate, params);
             log.info(sparulQuery);        
 
@@ -158,8 +176,8 @@ public class NuggetServiceImpl implements NuggetService
 
             List<String> params = new ArrayList<String>();
             params.add(nugget.getPatientPseudoID());
-            params.add(nugget.getContents());
-            params.add(nugget.getTimeStamp().toString());
+            params.add(nugget.getNugget());
+            params.add(nugget.getEpoch());
             String sparulQuery = Util.prepareQuery(queryTemplate, params);
             log.info(sparulQuery);        
 

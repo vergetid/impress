@@ -1,5 +1,6 @@
 package eu.impress.rest.api;
 
+import eu.impress.logevo.model.Patient;
 import eu.impress.repository.model.NuggetDescription;
 import eu.impress.repository.service.NuggetServiceImpl;
 import java.util.Date;
@@ -42,10 +43,10 @@ public class NuggetManagementController
 		value="/nugget", 
 		method=RequestMethod.GET,
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    public  ResponseEntity<NuggetDescription>  getLatestNuggetByPatientPseudoID(@RequestParam("id") String id)
+    public  ResponseEntity<Patient>  getLatestNuggetByPatientPseudoID(@RequestParam("id") String id)
     {	        
-        NuggetDescription nugget = nuggetServiceImpl.retrieveNuggetByPatientPseudoID(id);
+        Patient patient = nuggetServiceImpl.getPatientStateByPatientID(id);
                 
-	return new ResponseEntity(nugget,HttpStatus.OK);
+	return new ResponseEntity<Patient>(patient,HttpStatus.OK);
     }    
 }

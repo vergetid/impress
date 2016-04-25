@@ -23,6 +23,8 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.util.FileSystemUtils;
 
+import eu.impress.repository.service.SimulateReceiveMessage;
+
 /**
  *
  * @author danae
@@ -52,8 +54,12 @@ public class Main extends SpringBootServletInitializer {
     //Development only
     //get the contents of the TEP file
     //System.out.println("Tep file location: " + tepFileName);
-    File file = new File("/home/jim/TEPmessageReceived_1460722259595.msg");
+    File file = new File("/home/jim/TEPmessageReceived.msg");
     String tepMsgStr = new String(Files.readAllBytes(file.toPath()));
+    
+//SimulateReceiveMessage simulateReceiveMessage = new SimulateReceiveMessage();
+//simulateReceiveMessage.receiveMessage(tepMsgStr);
+
     //System.out.println(new String(Files.readAllBytes(file.toPath())));
      // Send a message
         MessageCreator messageCreator = new MessageCreator() {

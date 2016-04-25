@@ -3,6 +3,7 @@ package eu.impress.logevo.service;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -26,12 +27,45 @@ public class PatientDAOImpl implements PatientDAO {
 	
 	
 	@Override
-	public Patient findPatientbyID(String id) {
-		// Test data
-		// TODO: insert Patient to database
-		Patient patient = new Patient();
-		patient.setPseudoID("0");
-		return patient;
+	public Patient findPatientbyID(String pseudoId) throws SQLException {
+		try {
+			Class.forName(driver);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Connection connection = DriverManager
+				.getConnection(url,user, password);
+		
+		String sql = "SELECT * FROM Patient " +
+				"WHERE pseudoID = ?";
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, pseudoId);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				Patient patient = new Patient();
+				patient.setId(rs.getInt("id"));
+				patient.setPseudoID(rs.getString("pseudoID"));
+				patient.setAsset_id(rs.getString("asset"));
+				patient.setNugget(rs.getString("nugget"));
+				patient.setLastUpdateTime(rs.getString("lastUpdatedTime"));
+				return patient;
+			} else {
+				return null;
+			}
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+			
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {}
+			}
+		}	
 	}
 
 	@Override
@@ -48,13 +82,15 @@ public class PatientDAOImpl implements PatientDAO {
 		String sql = "INSERT INTO Patient " +
 				"SET pseudoID = ?, "
 				+ "asset = ?, "
-				+ "nugget = ? ";
+				+ "nugget = ?, "
+				+ "lastUpdatedTime=? ";
 		
 		try {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setString(1, patient.getPseudoID());
 			ps.setString(2, patient.getAsset_id());
 			ps.setString(3, patient.getNugget());
+			ps.setString(4, patient.getLastUpdateTime());
 			ps.executeUpdate();
 			ps.close();
 			
@@ -70,5 +106,44 @@ public class PatientDAOImpl implements PatientDAO {
 		}	
 		return;
 	}
-
+	@Override
+	public void updatePatient(Patient patient) throws SQLException {
+		try {
+			Class.forName(driver);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Connection connection = DriverManager
+				.getConnection(url,user, password);
+		
+		String sql = "UPDATE Patient " +
+				"SET pseudoID = ?, "
+				+ "asset = ?, "
+				+ "nugget = ?, "
+				+ "lastUpdatedTime=? "
+				+ "WHERE id = ?";
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, patient.getPseudoID());
+			ps.setString(2, patient.getAsset_id());
+			ps.setString(3, patient.getNugget());
+			ps.setString(4, patient.getLastUpdateTime());
+			ps.setInt(5, patient.getId());
+			ps.executeUpdate();
+			ps.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+			
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {}
+			}
+		}	
+		return;		
+	}
 }

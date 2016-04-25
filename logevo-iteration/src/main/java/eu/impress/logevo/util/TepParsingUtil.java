@@ -44,6 +44,23 @@ public class TepParsingUtil {
 		return nNode.getTextContent();
 	}
 	
+	public static String getAsset(String tepMsgEnvelopeStr) throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException, ParseException {
+		String tepMsgStr = decapsulateTEP(tepMsgEnvelopeStr);
+		Document doc = createXmlDocument(tepMsgStr);
+		System.out.println("TEP UTIL getAsset: AssetReceived" + doc.getElementsByTagName("patientCurrentDisposition").item(0).getTextContent());		
+		return doc.getElementsByTagName("patientCurrentDisposition").item(0).getTextContent();	
+	}
+
+	public static String[] getSymptoms(String tepMsgEnvelopeStr) throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException {
+		String tepMsgStr = decapsulateTEP(tepMsgEnvelopeStr);
+		Document doc = createXmlDocument(tepMsgStr);
+		NodeList nList = doc.getElementsByTagName("ext:nameURI");	
+		for (int i = 0; i < nList.getLength(); i++) {
+			Node currentNode = nList.item(i);
+			System.out.println("Symptom: " + currentNode.getTextContent());
+		}
+		return null;
+	}
 	public static String getSentAndIncidentTimeDiff(String tepMsgEnvelopeStr) throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException, ParseException {
 		
 		Document doc = createXmlDocument(tepMsgEnvelopeStr);
@@ -76,6 +93,25 @@ public class TepParsingUtil {
 				
 		return "";
 	
+	}
+	public static String getSentTime(String tepMsgEnvelopeStr) throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException {
+		Document doc = createXmlDocument(tepMsgEnvelopeStr);
+		NodeList nList = doc.getElementsByTagName("dateTimeSent");
+		String dateSent = nList.item(0).getTextContent();	
+		
+		try {
+			XMLGregorianCalendar dateSentGc = DatatypeFactory.newInstance().newXMLGregorianCalendar(dateSent);
+			System.out.println("TepParsingUtil: getTimeDiff: parsed Sent Datetime: " + dateSentGc);
+			Long epoch = dateSentGc.toGregorianCalendar().getTimeInMillis();
+			System.out.println("TepParsingUtil: getSentTime: Epoch computed in Millis: " + epoch);
+			Double epochInHours = 2.77777778*epoch.floatValue()*1e-7;
+			System.out.println("TepParsingUtil: getSentTime: Epoch computed in Hours: " + epoch);
+			return epoch.toString();
+		} catch (DatatypeConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return null;
 	}
 	public static String getPatientId(String tepMsgEnvelopeStr) throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException {
 		String tepMsgStr = decapsulateTEP(tepMsgEnvelopeStr);

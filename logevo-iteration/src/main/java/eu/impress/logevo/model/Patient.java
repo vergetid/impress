@@ -5,6 +5,15 @@ public class Patient {
 	private String pseudoID;
 	private String asset_id;
 	private String nugget;
+	private String lastUpdateTime;
+
+	public String getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	public void setLastUpdateTime(String lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
 
 	public String getPseudoID() {
 		return pseudoID;
