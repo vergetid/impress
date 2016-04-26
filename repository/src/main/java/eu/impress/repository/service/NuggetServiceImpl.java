@@ -2,6 +2,7 @@ package eu.impress.repository.service;
 
 import eu.impress.logevo.dao.PatientDAO;
 import eu.impress.logevo.model.Patient;
+import eu.impress.logevo.util.DateUtils;
 import eu.impress.repository.dao.NuggetService;
 import eu.impress.repository.model.NuggetDescription;
 import eu.impress.util.Util;
@@ -45,6 +46,17 @@ public class NuggetServiceImpl implements NuggetService
     @Autowired
     PatientDAO patientDAO;
     
+	@Override
+	public void updatePatientDirect(Patient patient) {
+		patient.setLastUpdateTime(DateUtils.XmlGregorianDateStringtoEpoch("now"));
+		try {
+			patientDAO.updatePatient(patient);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
     @Override 
     public Patient getPatientStateByPatientID(String patientID) {
     	try {

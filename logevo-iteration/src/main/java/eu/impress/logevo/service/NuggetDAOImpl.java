@@ -1,5 +1,6 @@
 package eu.impress.logevo.service;
 
+import java.sql.SQLException;
 import java.util.GregorianCalendar;
 
 import javax.xml.datatype.DatatypeFactory;
@@ -64,7 +65,7 @@ public class NuggetDAOImpl implements NuggetDAO {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public void updatePatient(Patient patient, String TEPTime) {
         

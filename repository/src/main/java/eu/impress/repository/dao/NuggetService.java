@@ -8,4 +8,5 @@ public interface NuggetService
     public NuggetDescription retrieveNuggetByPatientPseudoID(String patientPseudoID);
     public void insertNewNugget(NuggetDescription nugget);
 	public Patient getPatientStateByPatientID(String patientID);
+	public void updatePatientDirect(Patient patient);
 }

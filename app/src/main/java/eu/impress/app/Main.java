@@ -42,7 +42,7 @@ public class Main extends SpringBootServletInitializer {
         SimpleJmsListenerContainerFactory factory = new SimpleJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setPubSubDomain(true);
-	factory.setReplyPubSubDomain(true);
+        factory.setReplyPubSubDomain(true);
         factory.setSubscriptionDurable(true);        
         factory.setClientId("intl-89890");
         return factory;

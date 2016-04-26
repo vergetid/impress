@@ -39,10 +39,10 @@ public class ReceiverImpl {
 	 @Autowired
 	 ConfigurableApplicationContext context;
 	// ?consumer.retroactive=true&consumer.prefetchSize=10
-	@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
-	//@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
+	//@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
+	@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
 	public void receiveMessage(String message) {
-		//System.out.println("Received <" + message + ">");
+		System.out.println("Received <" + message + ">");
 		//Prepare an xml document to parse the TEP Message
 
 			
@@ -75,12 +75,15 @@ public class ReceiverImpl {
 				System.out.println("ReceiverImpl: Found existing patient");
 				//System.out.println("Found asset: " + TepParsingUtil.getAsset(message));
 				//System.out.println("With Value: " + Asset.getValByName(TepParsingUtil.getAsset(message)));
-				patient.setAsset_id(Asset.getValByName(TepParsingUtil.getAsset(message)));
+				if ( Asset.getValByName(TepParsingUtil.getAsset(message)) != null) {
+					patient.setAsset_id( Asset.getValByName(TepParsingUtil.getAsset(message)) );
+				} else {
+					patient.setAsset_id("0");
+				}
 				nuggetDAO.updatePatient(patient, 
 						TepParsingUtil.getSentTime(message));
 			}
-		} catch (ParserConfigurationException | SAXException | IOException | ParseException | SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (ParserConfigurationException | SAXException | IOException | ParseException | SQLException e) {			
 			e.printStackTrace();
 		}
 		/*try {
@@ -89,18 +92,18 @@ public class ReceiverImpl {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}*/
-		/*System.out.println("DEBUG: eventId: " + eventId);
+		System.out.println("DEBUG: eventId: " + eventId);
 		// Save the contents of the message to a file
-		File file = new File(getClass().getClassLoader().getResource(".").getFile()
-				+ "/TEPmessageReceived_" + new Date().getTime() + ".msg");
+		//File file = new File(getClass().getClassLoader().getResource(".").getFile()
+		//		+ "/TEPmessageReceived_" + new Date().getTime() + ".msg");
 		// context.close();
-		try (Writer writer = new BufferedWriter(new FileWriter(file))) {
-			String contents = message;
+		//try (Writer writer = new BufferedWriter(new FileWriter(file))) {
+		//	String contents = message;
 
-			writer.write(contents);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
+		//	writer.write(contents);
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//}
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
 

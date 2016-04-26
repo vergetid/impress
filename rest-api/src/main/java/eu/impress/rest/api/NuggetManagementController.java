@@ -1,8 +1,13 @@
 package eu.impress.rest.api;
 
+import eu.impress.logevo.dao.NuggetDAO;
+import eu.impress.logevo.dao.PatientDAO;
 import eu.impress.logevo.model.Patient;
+import eu.impress.repository.dao.NuggetService;
 import eu.impress.repository.model.NuggetDescription;
 import eu.impress.repository.service.NuggetServiceImpl;
+
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -24,7 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class NuggetManagementController
 {    
     @Autowired
-    NuggetServiceImpl nuggetServiceImpl;
+    NuggetService nuggetService;
+    @Autowired
+    PatientDAO patientDAO;
+
     
     private static final Logger log = LoggerFactory.getLogger(eu.impress.rest.api.NuggetManagementController.class);
         
@@ -32,9 +40,22 @@ public class NuggetManagementController
 		value="/nugget", 
 		method=RequestMethod.POST,
                 consumes = MediaType.APPLICATION_JSON_VALUE)
-    public  ResponseEntity<String>  insertNugget(@RequestBody NuggetDescription nugget)
-    {	        
-        nuggetServiceImpl.insertNewNugget(nugget);
+    public  ResponseEntity<String>  insertNugget(@RequestBody Patient patient)
+    {	  
+    	try {
+    		Patient patientToUpdate = patientDAO.findPatientbyID(patient.getPseudoID());
+			if (patientToUpdate == null) {
+				return new ResponseEntity<String>("Patient not found", HttpStatus.NOT_FOUND);
+			} else {
+				patientToUpdate.setNugget(patient.getNugget());
+				nuggetService.updatePatientDirect(patientToUpdate);
+				return new ResponseEntity<String>("Patient Updated", HttpStatus.NOT_FOUND);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        //nuggetService.insertNewNugget(nugget);
                 
 	return new ResponseEntity(HttpStatus.OK);
     }
@@ -43,9 +64,12 @@ public class NuggetManagementController
 		value="/nugget", 
 		method=RequestMethod.GET,
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    public  ResponseEntity<Patient>  getLatestNuggetByPatientPseudoID(@RequestParam("id") String id)
+    public  ResponseEntity<Patient>  getLatestNuggetByPatientPseudoID(@RequestParam("patientID") String id)
     {	        
-        Patient patient = nuggetServiceImpl.getPatientStateByPatientID(id);
+        Patient patient = nuggetService.getPatientStateByPatientID(id);
+        if (patient == null) {
+        	return new ResponseEntity<Patient>(patient, HttpStatus.NOT_FOUND);
+        }
                 
 	return new ResponseEntity<Patient>(patient,HttpStatus.OK);
     }    
