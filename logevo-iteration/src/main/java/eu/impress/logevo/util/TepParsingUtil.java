@@ -33,7 +33,8 @@ public class TepParsingUtil {
 		Element eElement = (Element) nNode;
 		System.out.println("TEP UTIL getEventType: Incident ID: " + eElement.getElementsByTagName("ID").item(0).getTextContent());
 
-		return eElement.getElementsByTagName("ID").item(0).getTextContent();
+		//return eElement.getElementsByTagName("ID").item(0).getTextContent();
+		return "3";
 	}
 	
 	public static String decapsulateTEP(String tepMsgEnvelopeStr) throws ParserConfigurationException, UnsupportedEncodingException, SAXException, IOException {

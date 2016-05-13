@@ -69,7 +69,7 @@ public class LogevoCallsEnvelopeFactory {
         SOAPElement soapBodyElem1 = soapBodyElem.addChildElement("longitudinal_deviation");
         soapBodyElem1.addTextNode("20");
         SOAPElement soapBodyElem2 = soapBodyElem.addChildElement("latitudinal_deviation");
-        soapBodyElem2.addTextNode("20");
+        soapBodyElem2.addTextNode("30");
         SOAPElement soapBodyElem3 = soapBodyElem.addChildElement("event_type");
         soapBodyElem3.addTextNode(event_type);
         

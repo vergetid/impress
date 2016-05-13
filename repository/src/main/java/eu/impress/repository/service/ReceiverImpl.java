@@ -39,8 +39,9 @@ public class ReceiverImpl {
 	 @Autowired
 	 ConfigurableApplicationContext context;
 	// ?consumer.retroactive=true&consumer.prefetchSize=10
-	//@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
-	@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
+	 //@JmsListener(destination = "ActiveMQ.Advisory.Consumer.Topic.IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
+	@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
+	//@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
 	public void receiveMessage(String message) {
 		System.out.println("Received <" + message + ">");
 		//Prepare an xml document to parse the TEP Message
