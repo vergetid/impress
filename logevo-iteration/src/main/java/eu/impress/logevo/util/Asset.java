@@ -1,8 +1,10 @@
 package eu.impress.logevo.util;
 
 public enum Asset {
-	NONE("0"), AMBULANCE("1"), EMERGENCY("2"), OPERATING("3"),
-    POLICE("4"), SCENE("5"), SITE("6"); 
+	Discharged("0"), Transferred("2"), Deceased("0"), NoTreatmentRequired("3"),
+	RefusedCare("5"), TreatedAndReleased("0"), TreatedAndTransferredCare("2"),
+	TreatedAndTransported("1"), Admitted("2"), TreatedAndTransportedToHospital("2"),
+	PendingOngoing("5");
 	
 	private String val;
 	public String getVal() {
@@ -13,7 +15,7 @@ public enum Asset {
 	}
 	public static String getValByName(String name) {		
 		for (Asset val: Asset.values()) {
-			if ( name.toLowerCase().contains(val.name().toLowerCase())) {
+			if ( name.replace("-","").toLowerCase().contains(val.name().toLowerCase())) {
 				return val.getVal();
 			}
 		}
