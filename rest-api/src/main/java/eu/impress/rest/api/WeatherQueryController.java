@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import eu.impress.repository.model.weather.current.WeatherCurrent;
+import eu.impress.repository.model.weather.forecast.WeatherForecast;
 
 
 @RestController
@@ -69,7 +70,7 @@ public class WeatherQueryController {
 	public ResponseEntity<String> getForecastInRectangle() {
 		return new ResponseEntity<String>("Not Currently Supported", HttpStatus.OK);
 	}
-	/*@RequestMapping(
+	@RequestMapping(
 			value="/weather/forecast/circle", 
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE
@@ -87,5 +88,6 @@ public class WeatherQueryController {
 		WeatherForecast weatherForecast = 
 				restTemplate.getForObject(restEndpoint, WeatherForecast.class);		
 		return new ResponseEntity<WeatherForecast>(weatherForecast, HttpStatus.OK);
-	}	*/	
+	}
+
 }
