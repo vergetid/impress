@@ -53,9 +53,9 @@ public class Main extends SpringBootServletInitializer {
     ApplicationContext ctx = SpringApplication.run(Main.class, args);
     //Development only
     //get the contents of the TEP file
-    //System.out.println("Tep file location: " + tepFileName);
-    //File file = new File("/home/jim/TEPmessageReceived.msg");
-    //String tepMsgStr = new String(Files.readAllBytes(file.toPath()));
+    /*System.out.println("Tep file location: " + tepFileName);
+    File file = new File("/home/jim/TEPmessageReceived-new.msg");
+    String tepMsgStr = new String(Files.readAllBytes(file.toPath()));*/
     
 //SimulateReceiveMessage simulateReceiveMessage = new SimulateReceiveMessage();
 //simulateReceiveMessage.receiveMessage(tepMsgStr);

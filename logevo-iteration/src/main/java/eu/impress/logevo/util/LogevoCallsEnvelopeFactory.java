@@ -53,6 +53,41 @@ public class LogevoCallsEnvelopeFactory {
         return soapMessage;
 		
 	}
+	public static SOAPMessage createGaugerFullrequest(String nugget, int symptomId, int value) throws SOAPException {
+        MessageFactory messageFactory = MessageFactory.newInstance();
+        SOAPMessage soapMessage = messageFactory.createMessage();
+        SOAPPart soapPart = soapMessage.getSOAPPart();
+
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
+
+        // SOAP Envelope
+        SOAPEnvelope envelope = soapPart.getEnvelope();
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");        
+        SOAPBody soapBody = envelope.getBody();	
+        
+        SOAPElement soapBodyElem = soapBody.addChildElement("gaugfullreq", "imp");
+        SOAPElement soapBodyElem1 = soapBodyElem.addChildElement("nugget");
+        soapBodyElem1.addTextNode(nugget);
+        SOAPElement soapBodyElem2 = soapBodyElem.addChildElement("symptom_id");
+        soapBodyElem2.addTextNode(Integer.toString(symptomId));
+        SOAPElement soapBodyElem3 = soapBodyElem.addChildElement("symptom_val");
+        soapBodyElem3.addTextNode(Integer.toString(value));
+        
+        MimeHeaders headers = soapMessage.getMimeHeaders();
+        headers.addHeader("SOAPAction", serverURI);
+
+        soapMessage.saveChanges();
+        
+        /*try {
+        	soapMessage.writeTo(System.out);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+        
+        return soapMessage;
+		
+	}	
 	public static SOAPMessage createAprioriGenfullRequest(String event_type) throws SOAPException {
         MessageFactory messageFactory = MessageFactory.newInstance();
         SOAPMessage soapMessage = messageFactory.createMessage();

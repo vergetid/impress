@@ -2,6 +2,7 @@ package eu.impress.repository.service;
 
 import eu.impress.logevo.dao.NuggetDAO;
 import eu.impress.logevo.dao.PatientDAO;
+import eu.impress.logevo.model.GaugerSymptom;
 import eu.impress.logevo.model.Patient;
 import eu.impress.logevo.util.Asset;
 import eu.impress.logevo.util.LogevoCallsEnvelopeFactory;
@@ -16,6 +17,7 @@ import java.io.Writer;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -83,6 +85,11 @@ public class ReceiverImpl {
 				}
 				nuggetDAO.updatePatient(patient, 
 						TepParsingUtil.getSentTime(message));
+				List<GaugerSymptom> symptoms = TepParsingUtil.getSymptoms(message);
+				//check if symptoms present
+				if (symptoms.size() > 0) {
+					nuggetDAO.updatePatientWithSymptoms(patient, symptoms);
+				}
 			}
 		} catch (ParserConfigurationException | SAXException | IOException | ParseException | SQLException e) {			
 			e.printStackTrace();

@@ -6,9 +6,11 @@ import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -23,6 +25,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import eu.impress.logevo.model.GaugerSymptom;
 
 public class TepParsingUtil {
 	public static String getEventType(String tepMsgEnvelopeStr) throws ParserConfigurationException, SAXException, IOException {
@@ -52,15 +56,25 @@ public class TepParsingUtil {
 		return doc.getElementsByTagName("patientCurrentDisposition").item(0).getTextContent();	
 	}
 
-	public static String[] getSymptoms(String tepMsgEnvelopeStr) throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException {
+	public static List<GaugerSymptom> getSymptoms(String tepMsgEnvelopeStr) throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException {
 		String tepMsgStr = decapsulateTEP(tepMsgEnvelopeStr);
 		Document doc = createXmlDocument(tepMsgStr);
 		NodeList nList = doc.getElementsByTagName("ext:nameURI");	
+		NodeList valueList = doc.getElementsByTagName("ext:value");
+		List<GaugerSymptom> symptomList = new ArrayList<GaugerSymptom>();
 		for (int i = 0; i < nList.getLength(); i++) {
+			GaugerSymptom symptom = new GaugerSymptom();
 			Node currentNode = nList.item(i);
-			System.out.println("Symptom: " + currentNode.getTextContent());
+			String symptomName = currentNode.getTextContent();
+			symptom.setLocation(symptomName.split("/")[0]);
+			symptom.setSymptomType(symptomName.split("/")[1]);
+			symptom.setValue(Integer.parseInt(valueList.item(i).getTextContent()));
+			symptomList.add(symptom);
+			System.out.println("Symptom Location: " + symptom.getLocation());
+			System.out.println("Symptom Type: " + symptom.getSymptomType());
+			System.out.println("Symptom value: " + symptom.getValue());
 		}
-		return null;
+		return symptomList;
 	}
 	public static String getSentAndIncidentTimeDiff(String tepMsgEnvelopeStr) throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException, ParseException {
 		

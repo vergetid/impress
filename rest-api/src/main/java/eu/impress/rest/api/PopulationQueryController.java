@@ -3,6 +3,7 @@ package eu.impress.rest.api;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,8 @@ public class PopulationQueryController {
 			//produces=MediaType.TEXT_PLAIN_VALUE
 		)
 	public ResponseEntity<PopulationResponse> getCityPopulation(
-			@RequestParam("x[]") String x,
-			@RequestParam("y[]") String y
+			@RequestParam("x[]") String y,
+			@RequestParam("y[]") String x
 		) {	
 
 		if (x.split(",").length != y.split(",").length) {
@@ -36,6 +37,7 @@ public class PopulationQueryController {
 		}
 		List<Point> coords = Util.convertStringArraysToPoints(x.split(","), y.split(","));
 		Integer population = populationQueryservice.getPopulation(coords);
+
 		return new ResponseEntity<PopulationResponse>(new PopulationResponse(population.toString())
 				, HttpStatus.OK);
 	}

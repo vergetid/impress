@@ -2,6 +2,7 @@ package eu.impress.logevo.service;
 
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -13,8 +14,10 @@ import javax.xml.soap.SOAPMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.impress.logevo.dao.GaugerSymptomDAO;
 import eu.impress.logevo.dao.NuggetDAO;
 import eu.impress.logevo.dao.PatientDAO;
+import eu.impress.logevo.model.GaugerSymptom;
 import eu.impress.logevo.model.Patient;
 import eu.impress.logevo.util.DateUtils;
 import eu.impress.logevo.util.LogevoCallsEnvelopeFactory;
@@ -24,6 +27,8 @@ public class NuggetDAOImpl implements NuggetDAO {
 
 	@Autowired
 	PatientDAO patientDAO;
+	@Autowired
+	GaugerSymptomDAO gaugerSymptomDAO;
 	
 	@Override
 	public void initiatePatient(Patient patient, String eventId, String timeDiff) {
@@ -98,9 +103,29 @@ patientDAO.updatePatient(patient);
 	}
 
 	@Override
-	public void updatePatientWithSymptoms(Patient patient, String[] symptoms) {
-		// TODO Auto-generated method stub
-		
+	public void updatePatientWithSymptoms(Patient patient, List<GaugerSymptom> symptoms) {
+		for (GaugerSymptom symptom : symptoms) {
+			int symptomId = gaugerSymptomDAO.getSymptomIdbySymtomDescription(
+					symptom.getLocation(), symptom.getSymptomType());
+				try {
+	        	SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
+				SOAPConnection soapConnection = soapConnectionFactory.createConnection();
+				String url = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";	
+	            SOAPMessage sickevoSoapMessage = 
+	            		LogevoCallsEnvelopeFactory.createGaugerFullrequest(
+	            				patient.getNugget(), symptomId, symptom.getValue());
+	            SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	
+	            System.out.println("NuggetDAOImpl: updatePatient: GAUGER RETURNED WITH:");
+	            LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
+	            
+	            String nugget = sickevoSoapResponse.getSOAPBody().getElementsByTagName("nugget").item(0).getTextContent();
+	            patient.setNugget(nugget);
+	            patientDAO.updatePatient(patient);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	             			
+		}
 	}
 
 }
