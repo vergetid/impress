@@ -45,7 +45,7 @@ public class BedsAvailabilityEMCRController {
                 try
                 {
                     //get HAVE String
-                    bedavailability = b.getBedTypeAvailablityHAVE("ΕΥΑΓΓΕΛΙΣΜΟΣ");
+                    bedavailability = b.getBedTypeAvailablityHAVE(hospitalName);
                     System.err.println(" - bedAvail: " + bedavailability);
                     
                     //get DE String

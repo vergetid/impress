@@ -64,7 +64,7 @@ public class BeansTransformationImpl implements BeansTransformation {
 		OrganisationNameType organisationNameType = new OrganisationNameType();		
 		OrganisationNameType.NameElement nameElement = new OrganisationNameType.NameElement();
 		//nameElement.setValue("ΕΥΑΓΓΕΛΙΣΜΟΣ");
-                nameElement.setValue("CIVICO");
+                nameElement.setValue("Ospedale Civico");
 		organisationNameType.getNameElement().add(nameElement);
 		organizationInformation.getOrganisationName().add(organisationNameType);
 		organization.setOrganizationInformation(organizationInformation);
@@ -78,13 +78,15 @@ public class BeansTransformationImpl implements BeansTransformation {
                 for(BedStats bedStats : bedstatslist)
                 {
                     BedCapacity bedCapacity = new BedCapacity();
+                    //bedCapacity.getBedType().add(bedStats.getClinicType());
                     bedCapacity.getBedType().add(bedStats.getClinicType());
-                    //bedCapacity.getBedType().add(a[i++]);
                     //if (i == 2) {
                     //	break;
                     //}
                     Capacity capacity = new Capacity();
                     capacity.setCapacityStatus("Vacant/Available");
+                    //capacity.setAvailableCount(BigInteger.valueOf(bedStats.getAvailabeBeds()));
+                    //capacity.setAvailableCount(BigInteger.valueOf(152));
                     capacity.setAvailableCount(BigInteger.valueOf(bedStats.getAvailabeBeds()));
                     bedCapacity.getCapacity().add(capacity);
                     hospitalBedCapacityStatus.getBedCapacity().add(bedCapacity);

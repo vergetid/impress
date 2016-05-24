@@ -6,10 +6,23 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX map: <http://localhost:2020/resource/#>
 PREFIX db: <http://localhost:2020/resource/>
 
-SELECT ?clinicTypeHospital ?bedsAvailable
+SELECT ?clinicTypeHospital ?AdultICU ?PediatricICU ?NeonatalICU ?EmergencyDepartment ?NurseryBeds ?MedicalSurgical ?RehabLongTermCare ?Burn ?Pediatrics ?AdultPsychiatric ?PediatricPsychiatric ?NegativeFlowIsolation ?OtherIsolation ?OperatingRooms
 WHERE
 {
-  ?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_HospitalName "[hospitalName]".
+  ?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_HospitalName "Civico".
   ?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_ClinicTypeDescription ?clinicTypeHospital.
-  ?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_BedsAvailable ?bedsAvailable.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_AdultICU ?AdultICU.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_PediatricICU ?PediatricICU.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_NeonatalICU ?NeonatalICU.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_EmergencyDepartment ?EmergencyDepartment.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_NurseryBeds ?NurseryBeds.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_MedicalSurgical ?MedicalSurgical.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_RehabLongTermCare ?RehabLongTermCare.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_Burn ?Burn.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_Pediatrics ?Pediatrics.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_AdultPsychiatric ?AdultPsychiatric.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_PediatricPsychiatric ?PediatricPsychiatric.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_NegativeFlowIsolation ?NegativeFlowIsolation.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_OtherIsolation ?OtherIsolation.
+?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_OperatingRooms ?OperatingRooms.
 }

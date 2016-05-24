@@ -2,6 +2,8 @@ package eu.impress.repository.model;
 
 import java.util.Date;
 
+import eu.impress.util.Pair;
+
 public class BedStats {
 	private String hospitalName;
 	@Deprecated
@@ -9,8 +11,9 @@ public class BedStats {
 	private Integer availabeBeds;
 	private Integer supplementaryBeds;
 	private Integer deployedBeds;
-        private String clinicType;        
+    private String clinicType;        
 	private Date lastDate;
+	private Pair<String, Integer> typesPerClinic;
 
         public String getClinicType() {
             return clinicType;
@@ -56,5 +59,13 @@ public class BedStats {
 	}
 	public void setHospitalName(String hospitalName) {
 		this.hospitalName = hospitalName;
+	}
+
+	public Pair<String, Integer> getTypesPerClinic() {
+		return typesPerClinic;
+	}
+
+	public void setTypesPerClinic(Pair<String, Integer> typesPerClinic) {
+		this.typesPerClinic = typesPerClinic;
 	}	
 }

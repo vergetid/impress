@@ -1,0 +1,15 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX vocab: <http://localhost:2020/resource/vocab/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX map: <http://localhost:2020/resource/#>
+PREFIX db: <http://localhost:2020/resource/>
+
+SELECT ?clinicTypeHospital ?bedsAvailable
+WHERE
+{
+  ?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_HospitalName "[hospitalName]".
+  ?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_ClinicTypeDescription ?clinicTypeHospital.
+  ?s vocab:dbo_HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate_BedsAvailable ?bedsAvailable.
+}

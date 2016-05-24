@@ -54,7 +54,8 @@ public class EDXLlib {
         ed.setDistributionID("impress_dhc_"+uuid); //this must be defined
         ed.setSenderID("urn://impress/dhc/bedavailability");
         
-        country.add("GR");
+        //country.add("GR");
+        country.add("IT");
         tatype.setCountry(country);
         targetArea.add(tatype);
         ed.setTargetArea(targetArea);
@@ -65,7 +66,8 @@ public class EDXLlib {
         ed.setCombinedConfidentiality("Unclassified");
         
         vstype.setExplicitAddressScheme("urn");
-        explicitAddressValue.add("urn://agency/keelpno");
+        //explicitAddressValue.add("urn://agency/keelpno");
+        explicitAddressValue.add("urn://it.gov.ems");
         vstype.setExplicitAddressValue(explicitAddressValue);
         explicitAddress.add(vstype);
         ed.setExplicitAddress(explicitAddress);

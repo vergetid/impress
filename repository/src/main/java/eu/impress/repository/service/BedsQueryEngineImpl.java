@@ -92,7 +92,7 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
 		    {
 		      QuerySolution soln = results.nextSolution();
 		      
-		      Literal l = soln.getLiteral("bedsAvailable") ;   // Get a result variable - must be a literal
+		      Literal l = soln.getLiteral("AdultICU") ;   // Get a result variable - must be a literal
 		      BedStats bedStats = new BedStats();
 		      bedStats.setClinicId(clinicId);
 		      bedStats.setAvailabeBeds(l.getInt());
@@ -142,18 +142,24 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, query);		
 		ResultSet results = qexec.execSelect();
                 
-		while(results.hasNext())
+		if(results.hasNext())
 		{
 		  QuerySolution soln = results.next();
 
-		  Literal clinicTypeHospital = soln.getLiteral("clinicTypeHospital") ;   // Get a result variable - must be a literal
-		  Literal bedsAvailable = soln.getLiteral("bedsAvailable");
-		  BedStats bedStats = new BedStats();
-		  bedStats.setClinicType(clinicTypeHospital.getString());
-		  bedStats.setAvailabeBeds(bedsAvailable.getInt());
-                  
-                  bedStatsList.add(bedStats);
-                }                  
+		  String clinics[] = {"AdultICU", "PediatricICU", "NeonatalICU", "EmergencyDepartment",
+				  "NurseryBeds", "MedicalSurgical", "RehabLongTermCare", "Burn", "Pediatrics",
+				  "AdultPsychiatric", "PediatricPsychiatric", "NegativeFlowIsolation",
+				  "OtherIsolation", "OperatingRooms"};
+		  for (int i = 0; i < clinics.length; i++) {
+			  Literal clinicBeds = soln.getLiteral(clinics[i]);
+			  BedStats bedStats = new BedStats();
+			  bedStats.setClinicType(clinics[i]);
+			  bedStats.setAvailabeBeds(clinicBeds.getInt());
+	                  
+	          bedStatsList.add(bedStats);			  
+		  }
+
+        }                  
                   
 		return bedStatsList;
 	}			
