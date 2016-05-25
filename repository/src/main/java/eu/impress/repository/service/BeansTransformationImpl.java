@@ -88,6 +88,7 @@ public class BeansTransformationImpl implements BeansTransformation {
                     //capacity.setAvailableCount(BigInteger.valueOf(bedStats.getAvailabeBeds()));
                     //capacity.setAvailableCount(BigInteger.valueOf(152));
                     capacity.setAvailableCount(BigInteger.valueOf(bedStats.getAvailabeBeds()));
+                    capacity.setBaselineCount(BigInteger.valueOf(2*bedStats.getAvailabeBeds()));
                     bedCapacity.getCapacity().add(capacity);
                     hospitalBedCapacityStatus.getBedCapacity().add(bedCapacity);
                 }
