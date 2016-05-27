@@ -41,6 +41,18 @@ public class TepParsingUtil {
 		return "3";
 	}
 	
+	public static String getIncidentId(String tepMsgEnvelopeStr) throws ParserConfigurationException, SAXException, IOException {
+		String tepMsgStr = decapsulateTEP(tepMsgEnvelopeStr);
+		Document doc = createXmlDocument(tepMsgStr);
+		NodeList nList = doc.getElementsByTagName("incidentID");
+		Node nNode = nList.item(0);
+		Element eElement = (Element) nNode;
+		System.out.println("TEP UTIL getEventType: Incident ID: " + eElement.getElementsByTagName("ID").item(0).getTextContent());
+
+		return eElement.getElementsByTagName("ID").item(0).getTextContent();
+		//return "3";
+	}
+	
 	public static String decapsulateTEP(String tepMsgEnvelopeStr) throws ParserConfigurationException, UnsupportedEncodingException, SAXException, IOException {
 		Document doc = createXmlDocument(tepMsgEnvelopeStr);
 		

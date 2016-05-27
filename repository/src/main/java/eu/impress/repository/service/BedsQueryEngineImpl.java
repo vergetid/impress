@@ -1,5 +1,6 @@
 package eu.impress.repository.service;
 
+import eu.impress.logevo.model.Patient;
 import eu.impress.repository.dao.BedsQueryEngineService;
 import eu.impress.repository.model.BedStats;
 import java.io.BufferedReader;
@@ -7,6 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -18,7 +23,6 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -28,11 +32,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BedsQueryEngineImpl implements BedsQueryEngineService{
+			
 	private String queryTemplate;
 	@Value("${d2r.endpoint}")
-	private String endpoint;	
+	private String endpoint;
+	@Value("${sql.endpoint}")
+	private String sqlendpoint;
+	@Value("${sql.user}")
+	private String user;
+	@Value("${sql.password}")
+	private String password;
+	@Value("${sql.database}")
+	private String database;	
 	public BedStats findHospitalAvailableBedsAllClinics(String hospital) {
-		ApplicationContext appContext = new ClassPathXmlApplicationContext();
+		/*ApplicationContext appContext = new ClassPathXmlApplicationContext();
 		org.springframework.core.io.Resource resource = appContext.getResource(
 				"classpath:sparqlQueries/BedsAvailabilityQuery");
 		try {
@@ -74,10 +87,11 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
 		  return bedStats;
 		} else {
 			return null;
-		}			
+		}	*/
+		return null;
 	}
 	public BedStats findAvailableBedsByClinic(Integer clinicId) {
-		ClassLoader classLoader = getClass().getClassLoader();
+		/*ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("sparqlQueries/BedsAvailabilityQuery").getFile());
 		try {
 			queryTemplate = FileUtils.readFileToString(file);
@@ -105,10 +119,11 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		}		
+		}	*/
+		return null;
 	}
 
-	public List<BedStats> findHospitalAvailableBedsTypes(String hospital) {
+	/*public List<BedStats> findHospitalAvailableBedsTypes(String hospital) {
 		ApplicationContext appContext = new ClassPathXmlApplicationContext();
 		org.springframework.core.io.Resource resource = appContext.getResource(
 				"classpath:sparqlQueries/BedsTypesAvailabilityQuery");
@@ -162,9 +177,83 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
         }                  
                   
 		return bedStatsList;
-	}			
+	}		*/	
+        
+	public List<BedStats> findHospitalAvailableBedsTypes(String hospital) {
+        String connectionString =
+                sqlendpoint+";"
+                + "database="+database+";"
+                + "user="+user+";"
+                + "password="+password+";"
+                + "loginTimeout=30;";
+        // Declare the JDBC objects.
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}        
+        Connection connection = null;
+                    
+        try {
+            connection = DriverManager.getConnection(connectionString);
+    		String sql = "SELECT a.HospitalName as HospitalName,"
+    				+ "			a.AdultICU as AdultICU, b.AdultICU as AdultICUbaseline,"
+    				+ "			 a.PediatricICU as PediatricICU, b.PediatricICU as  PediatricICUbaseline,"
+    				+ "			 a.NeonatalICU as NeonatalICU, b.NeonatalICU as NeonatalICUbaseline,"
+    				+ "			a.EmergencyDepartment as EmergencyDepartment, b.EmergencyDepartment as EmergencyDepartmentbaseline,"
+    				+ "			a.NurseryBeds as NurseryBeds, b.NurseryBeds as NurseryBedsbaseline,"
+    				+ "			a.MedicalSurgical as MedicalSurgical, b.MedicalSurgical as MedicalSurgicalbaseline,"
+    				+ "			a.RehabLongTermCare as RehabLongTermCare, b.RehabLongTermCare as RehabLongTermCarebaseline,"
+    				+ "			a.Burn as Burn, b.Burn as Burnbaseline,"
+    				+ "			a.Pediatrics as Pediatrics, b.Pediatrics as Pediatricsbaseline,"
+    				+ "			a.AdultPsychiatric as AdultPsychiatric, b.AdultPsychiatric as AdultPsychiatricbaseline,"
+    				+ "			a.PediatricPsychiatric as PediatricPsychiatric, b.PediatricPsychiatric as PediatricPsychiatricbaseline,"
+    				+ "			a.NegativeFlowIsolation as NegativeFlowIsolation, b.NegativeFlowIsolation as NegativeFlowIsolationbaseline,"
+    				+ "			a.OtherIsolation as OtherIsolation, b.OtherIsolation as OtherIsolationbaseline,"
+    				+ "			a.OperatingRooms as OperatingRooms, b.OperatingRooms as OperatingRoomsbaseline\n"
+    				+ "FROM "
+    				+ "	HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate as a,"
+    				+ "	HIS_RES_Hospital_Clinics_Capability as b"
+    				+ "	WHERE"
+    				+ "	a.HospitalID = b.HospitalID AND\n"
+    				+ " a.HospitalName = ?\n"
+    				+ "";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, hospital);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				  List<BedStats> bedStatsList = new ArrayList<BedStats>();
+				  String clinics[] = {"AdultICU", "PediatricICU", "NeonatalICU", "EmergencyDepartment",
+						  "NurseryBeds", "MedicalSurgical", "RehabLongTermCare", "Burn", "Pediatrics",
+						  "AdultPsychiatric", "PediatricPsychiatric", "NegativeFlowIsolation",
+						  "OtherIsolation", "OperatingRooms"};	
+				  for (String clinic : clinics) {
+					  BedStats bedStats = new BedStats();
+					  bedStats.setHospitalName(rs.getString("HospitalName"));
+					  bedStats.setClinicType(clinic);
+					  bedStats.setAvailabeBeds(rs.getInt(clinic));
+					  bedStats.setBaselineBeds(rs.getInt(clinic+"baseline"));
+					  bedStatsList.add(bedStats);
+				  }
+				  return bedStatsList;
+
+			} else {
+				return null;
+			}    		
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         
         
+        
+        finally {
+            if (connection != null) try { connection.close(); } catch(Exception e) {}
+        }        
+		return null;
+	}
 	private String prepareQuery(String query, List<String> params) {
 		Pattern pattern = Pattern.compile("\\[(.+?)\\]");
 		Matcher matcher = pattern.matcher(query);

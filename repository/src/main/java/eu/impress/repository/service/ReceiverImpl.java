@@ -54,10 +54,12 @@ public class ReceiverImpl {
 		String patientId;
 		String timeDiff;
 		String asset;
+		String incidentId;
 		try {
 			eventId = TepParsingUtil.getEventType(message);
 			patientId = TepParsingUtil.getPatientId(message);
 			timeDiff = TepParsingUtil.getSentAndIncidentTimeDiff(message);
+			incidentId = TepParsingUtil.getIncidentId(message);
 		} catch (ParserConfigurationException | SAXException | IOException | ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -71,7 +73,13 @@ public class ReceiverImpl {
 				//new patient
 				patient = new Patient();
 				patient.setPseudoID(patientId);
+				patient.setIncidentId(incidentId);
 				nuggetDAO.initiatePatient(patient, eventId, timeDiff);
+				List<GaugerSymptom> symptoms = TepParsingUtil.getSymptoms(message);
+				//check if symptoms present
+				if (symptoms.size() > 0) {
+					nuggetDAO.updatePatientWithSymptoms(patient, symptoms);
+				}				
 			} else {
 				//existing patient. Update w SICKEVO
 				//1st: Get Asset				

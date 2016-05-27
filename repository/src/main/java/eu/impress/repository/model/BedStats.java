@@ -13,6 +13,7 @@ public class BedStats {
 	private Integer deployedBeds;
     private String clinicType;        
 	private Date lastDate;
+	private Integer baselineBeds;
 	private Pair<String, Integer> typesPerClinic;
 
         public String getClinicType() {
@@ -67,5 +68,13 @@ public class BedStats {
 
 	public void setTypesPerClinic(Pair<String, Integer> typesPerClinic) {
 		this.typesPerClinic = typesPerClinic;
+	}
+
+	public Integer getBaselineBeds() {
+		return baselineBeds;
+	}
+
+	public void setBaselineBeds(Integer baselineBeds) {
+		this.baselineBeds = baselineBeds;
 	}	
 }

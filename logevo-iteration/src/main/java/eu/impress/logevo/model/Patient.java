@@ -6,6 +6,15 @@ public class Patient {
 	private String asset_id;
 	private String nugget;
 	private String lastUpdateTime;
+	private String incidentId;
+
+	public String getIncidentId() {
+		return incidentId;
+	}
+
+	public void setIncidentId(String incidentId) {
+		this.incidentId = incidentId;
+	}
 
 	public String getLastUpdateTime() {
 		return lastUpdateTime;

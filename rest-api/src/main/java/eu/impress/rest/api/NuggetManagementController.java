@@ -68,7 +68,10 @@ public class NuggetManagementController
     {	        
         Patient patient = nuggetService.getPatientStateByPatientID(id);
         if (patient == null) {
+        	System.out.println("NUGGET REST CONTROLLER: Not found w PatientId " + id);
         	return new ResponseEntity<Patient>(patient, HttpStatus.NOT_FOUND);
+        } else {
+        	System.out.println("NUGGET REST CONTROLLER: Found Patient w Id: " + id);
         }
                 
 	return new ResponseEntity<Patient>(patient,HttpStatus.OK);

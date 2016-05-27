@@ -1,6 +1,8 @@
 package eu.impress.logevo.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.MimeHeaders;
@@ -18,6 +20,43 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 public class LogevoCallsEnvelopeFactory {
+	
+	public static SOAPMessage createResOverviewFullRequest(List<String> nuggets) throws SOAPException {
+        MessageFactory messageFactory = MessageFactory.newInstance();
+        SOAPMessage soapMessage = messageFactory.createMessage();
+        SOAPPart soapPart = soapMessage.getSOAPPart();
+
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
+
+        // SOAP Envelope
+        SOAPEnvelope envelope = soapPart.getEnvelope();
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");        
+        SOAPBody soapBody = envelope.getBody();	
+        
+        SOAPElement soapBodyElem = soapBody.addChildElement("resoverreq", "imp");
+        SOAPElement soapBodyElem1 = soapBodyElem.addChildElement("nugget_list");
+        for (String nugget : nuggets) {
+        	soapBodyElem1.addChildElement("nugget").addTextNode(nugget);
+        }
+
+
+        
+        MimeHeaders headers = soapMessage.getMimeHeaders();
+        headers.addHeader("SOAPAction", serverURI);
+
+        soapMessage.saveChanges();
+        
+        /*try {
+        	soapMessage.writeTo(System.out);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+        
+        return soapMessage;
+		
+	}	
+	
 	public static SOAPMessage createSickevoFullRequest(String nugget, String asset_id, String deltaT) throws SOAPException {
         MessageFactory messageFactory = MessageFactory.newInstance();
         SOAPMessage soapMessage = messageFactory.createMessage();
