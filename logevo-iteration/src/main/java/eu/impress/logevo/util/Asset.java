@@ -1,10 +1,10 @@
 package eu.impress.logevo.util;
 
 public enum Asset {
-	Discharged("0"), Transferred("2"), Deceased("0"), NoTreatmentRequired("3"),
-	RefusedCare("5"), TreatedAndReleased("0"), TreatedAndTransferredCare("2"),
-	TreatedAndTransported("1"), Admitted("2"), TreatedAndTransportedToHospital("2"),
-	PendingOngoing("5");
+	Discharged("0"), Transferred("7"), Deceased("0"), NoTreatmentRequired("0"),
+	RefusedCare("0"), TreatedAndReleased("0"), TreatedAndTransferredCare("7"),
+	TreatedAndTransported("4"), Admitted("7"), TreatedAndTransportedToHospital("7"),
+	PendingOngoing("0"),ExtensionValue("6");
 	
 	private String val;
 	public String getVal() {

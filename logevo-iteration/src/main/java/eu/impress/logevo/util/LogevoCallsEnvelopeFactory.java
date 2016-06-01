@@ -19,6 +19,8 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
+import eu.impress.logevo.model.PPS;
+
 public class LogevoCallsEnvelopeFactory {
 	
 	public static SOAPMessage createResOverviewFullRequest(List<String> nuggets) throws SOAPException {
@@ -46,12 +48,13 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        /*try {
+        try {
+        	System.out.println("LogevoCallsEnvelopeFactory.createResOverviewFullRequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
         
         return soapMessage;
 		
@@ -82,16 +85,51 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        /*try {
+        try {
+        	System.out.println("LogevoCallsEnvelopeFactory.createSickevoFullRequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
         
         return soapMessage;
 		
 	}
+	
+	public static SOAPMessage createExposePPSrequest(String nugget) throws SOAPException {
+        MessageFactory messageFactory = MessageFactory.newInstance();
+        SOAPMessage soapMessage = messageFactory.createMessage();
+        SOAPPart soapPart = soapMessage.getSOAPPart();
+
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
+
+        // SOAP Envelope
+        SOAPEnvelope envelope = soapPart.getEnvelope();
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");        
+        SOAPBody soapBody = envelope.getBody();	
+        
+        SOAPElement soapBodyElem = soapBody.addChildElement("expppsreq", "imp");
+        SOAPElement soapBodyElem1 = soapBodyElem.addChildElement("nugget");
+        soapBodyElem1.addTextNode(nugget);
+        
+        MimeHeaders headers = soapMessage.getMimeHeaders();
+        headers.addHeader("SOAPAction", serverURI);
+
+        soapMessage.saveChanges();
+        
+        try {
+        	System.out.println("LogevoCallsEnvelopeFactory.createGaugerFullrequest:\n");
+        	soapMessage.writeTo(System.out);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        return soapMessage;
+		
+	}	
+	
 	public static SOAPMessage createGaugerFullrequest(String nugget, int symptomId, int value) throws SOAPException {
         MessageFactory messageFactory = MessageFactory.newInstance();
         SOAPMessage soapMessage = messageFactory.createMessage();
@@ -117,12 +155,13 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        /*try {
+        try {
+        	System.out.println("LogevoCallsEnvelopeFactory.createGaugerFullrequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
         
         return soapMessage;
 		
@@ -152,12 +191,13 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        /*try {
+        try {
+        	System.out.println("LogevoCallsEnvelopeFactory.createAprioriGenfullRequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 
 		return soapMessage;
 	}
@@ -169,4 +209,35 @@ public class LogevoCallsEnvelopeFactory {
         StreamResult result = new StreamResult(System.out);
         transformer.transform(sourceContent, result);
     }	
+	public static SOAPMessage createExposePPSRequest(String nugget) throws SOAPException {
+        MessageFactory messageFactory = MessageFactory.newInstance();
+        SOAPMessage soapMessage = messageFactory.createMessage();
+        SOAPPart soapPart = soapMessage.getSOAPPart();
+
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
+
+        // SOAP Envelope
+        SOAPEnvelope envelope = soapPart.getEnvelope();
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");        
+        SOAPBody soapBody = envelope.getBody();
+        
+        SOAPElement soapBodyElem = soapBody.addChildElement("expppsreq", "imp");
+        SOAPElement soapBodyElem1 = soapBodyElem.addChildElement("nugget");
+        soapBodyElem1.addTextNode(nugget);
+        
+        MimeHeaders headers = soapMessage.getMimeHeaders();
+        headers.addHeader("SOAPAction", serverURI);
+
+        soapMessage.saveChanges();
+        
+        try {
+        	System.out.println("LogevoCallsEnvelopeFactory.createAprioriGenfullRequest:\n");
+        	soapMessage.writeTo(System.out);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return soapMessage;
+	}    
 }

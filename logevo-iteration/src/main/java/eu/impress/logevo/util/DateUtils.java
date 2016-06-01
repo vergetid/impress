@@ -24,4 +24,9 @@ public class DateUtils {
 		}		
 		return null;
 	}
+	public static String millisToHours(Long millis) {
+		Double millisInHours = 2.77777778*millis.floatValue()*1e-7;
+		System.out.println("DEBUG: DATEUTILS.MILLISTOHOURS: Computed: " + millisInHours);
+		return millisInHours.toString();
+	}
 }

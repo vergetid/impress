@@ -70,7 +70,7 @@ System.err.println("SIMULATION: RECEIVED: " + message);
 				//System.out.println("With Value: " + Asset.getValByName(TepParsingUtil.getAsset(message)));
 				patient.setAsset_id(Asset.getValByName(TepParsingUtil.getAsset(message)));
 				nuggetDAO.updatePatient(patient, 
-						TepParsingUtil.getSentTime(message));
+						TepParsingUtil.getSentTime(message), null);
 				//Check if patient has Symptoms
 				TepParsingUtil.getSymptoms(message);
 			}

@@ -43,6 +43,7 @@ public class ReceiverImpl {
 	// ?consumer.retroactive=true&consumer.prefetchSize=10
 	 //@JmsListener(destination = "ActiveMQ.Advisory.Consumer.Topic.IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
 	@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
+	 //@JmsListener(destination = "IMPRESS.IncidentMgmt.Messages", containerFactory = "myJmsContainerFactory", subscription = "intl-89890-55")
 	//@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
 	public void receiveMessage(String message) {
 		System.out.println("Received <" + message + ">");
@@ -86,17 +87,21 @@ public class ReceiverImpl {
 				System.out.println("ReceiverImpl: Found existing patient");
 				//System.out.println("Found asset: " + TepParsingUtil.getAsset(message));
 				//System.out.println("With Value: " + Asset.getValByName(TepParsingUtil.getAsset(message)));
+				String sickevoAsset = null;
 				if ( Asset.getValByName(TepParsingUtil.getAsset(message)) != null) {
-					patient.setAsset_id( Asset.getValByName(TepParsingUtil.getAsset(message)) );
+					sickevoAsset = Asset.getValByName(TepParsingUtil.getAsset(message));
+					//patient.setAsset_id( Asset.getValByName(TepParsingUtil.getAsset(message)) );
 				} else {
-					patient.setAsset_id("0");
+					sickevoAsset = "0";
+					//patient.setAsset_id("0");
 				}
 				nuggetDAO.updatePatient(patient, 
-						TepParsingUtil.getSentTime(message));
+						TepParsingUtil.getSentTime(message), sickevoAsset);
 				List<GaugerSymptom> symptoms = TepParsingUtil.getSymptoms(message);
 				//check if symptoms present
 				if (symptoms.size() > 0) {
 					nuggetDAO.updatePatientWithSymptoms(patient, symptoms);
+					nuggetDAO.updatePatientStatScoring(patient);
 				}
 			}
 		} catch (ParserConfigurationException | SAXException | IOException | ParseException | SQLException e) {			
