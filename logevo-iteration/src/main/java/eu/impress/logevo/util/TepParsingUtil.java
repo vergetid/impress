@@ -71,8 +71,8 @@ public class TepParsingUtil {
 	public static List<GaugerSymptom> getSymptoms(String tepMsgEnvelopeStr) throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException {
 		String tepMsgStr = decapsulateTEP(tepMsgEnvelopeStr);
 		Document doc = createXmlDocument(tepMsgStr);
-		NodeList nList = doc.getElementsByTagName("ext:nameURI");	
-		NodeList valueList = doc.getElementsByTagName("ext:value");
+		NodeList nList = doc.getElementsByTagNameNS("urn:oasis:names:tc:emergency:edxl:extension:1.0", "nameURI");	
+		NodeList valueList = doc.getElementsByTagNameNS("urn:oasis:names:tc:emergency:edxl:extension:1.0", "value");
 		List<GaugerSymptom> symptomList = new ArrayList<GaugerSymptom>();
 		for (int i = 0; i < nList.getLength(); i++) {
 			GaugerSymptom symptom = new GaugerSymptom();
@@ -152,6 +152,7 @@ public class TepParsingUtil {
 	
 	private static Document createXmlDocument(String xmlSource) throws ParserConfigurationException, UnsupportedEncodingException, SAXException, IOException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		dbFactory.setNamespaceAware(true);
 		DocumentBuilder dBuilder;
 		Document doc;
 		dBuilder = dbFactory.newDocumentBuilder();

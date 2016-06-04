@@ -20,6 +20,7 @@ import eu.impress.logevo.dao.PatientDAO;
 import eu.impress.logevo.model.GaugerSymptom;
 import eu.impress.logevo.model.PPS;
 import eu.impress.logevo.model.Patient;
+import eu.impress.logevo.model.StatsScoring;
 import eu.impress.logevo.util.DateUtils;
 import eu.impress.logevo.util.LogevoCallsEnvelopeFactory;
 
@@ -145,8 +146,27 @@ public class NuggetDAOImpl implements NuggetDAO {
 
 	@Override
 	public void updatePatientStatScoring(Patient patient) {
-		PPS pps = getPPSFromNugget(patient.getNugget());
-		
+		PPS pps = getPPSFromNugget(patient.getNugget());		
+		try {
+	    	SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
+			SOAPConnection soapConnection = soapConnectionFactory.createConnection();
+			String url = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";	
+	        SOAPMessage sickevoSoapMessage;			
+			sickevoSoapMessage = LogevoCallsEnvelopeFactory.createStatscoringRequest(pps);
+			SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	
+            System.out.println("NuggetDAOImpl: updatePatient: StatScoring RETURNED WITH:");
+            LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);	
+            StatsScoring statsScoring = new StatsScoring();
+            statsScoring.setEtd(sickevoSoapResponse.getSOAPBody().getElementsByTagName("etd").item(0).getTextContent());
+            statsScoring.setGcs(sickevoSoapResponse.getSOAPBody().getElementsByTagName("gcs").item(0).getTextContent());
+            statsScoring.setRts(sickevoSoapResponse.getSOAPBody().getElementsByTagName("rts").item(0).getTextContent());
+            statsScoring.setCode(sickevoSoapResponse.getSOAPBody().getElementsByTagName("code").item(0).getTextContent());
+            patientDAO.updatePatientSymptomScore(patient, statsScoring);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        		
 	}
 	
 	private PPS getPPSFromNugget(String nugget) {
@@ -155,9 +175,9 @@ public class NuggetDAOImpl implements NuggetDAO {
 			SOAPConnection soapConnection = soapConnectionFactory.createConnection();
 			String url = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";	
             SOAPMessage sickevoSoapMessage = 
-            		LogevoCallsEnvelopeFactory.createExposePPSrequest(nugget);
+            		LogevoCallsEnvelopeFactory.createExposePPSRequest(nugget);
             SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	
-            System.out.println("NuggetDAOImpl: updatePatient: GAUGER RETURNED WITH:");
+            System.out.println("NuggetDAOImpl: updatePatient: ExposePPS RETURNED WITH:");
             LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
             PPS pps = new PPS();
             pps.setX_A(sickevoSoapResponse.getSOAPBody().getElementsByTagName("x_A").item(0).getTextContent());

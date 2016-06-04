@@ -51,18 +51,19 @@ public class ReceiverImpl {
 
 			
 		//Get Patient Pseudo id & event type
-		String eventId;
-		String patientId;
-		String timeDiff;
-		String asset;
-		String incidentId;
+		String eventId = null;
+		String patientId = null;
+		String timeDiff = null;
+		String asset = null;
+		String incidentId = null;
 		try {
 			eventId = TepParsingUtil.getEventType(message);
 			patientId = TepParsingUtil.getPatientId(message);
 			timeDiff = TepParsingUtil.getSentAndIncidentTimeDiff(message);
 			incidentId = TepParsingUtil.getIncidentId(message);
-		} catch (ParserConfigurationException | SAXException | IOException | ParseException e1) {
-			// TODO Auto-generated catch block
+			//timeDiff = "0.1";
+			//incidentId = "131313";
+		} catch (ParserConfigurationException | SAXException | IOException | ParseException e1) {			
 			e1.printStackTrace();
 			return;
 		}
@@ -80,6 +81,7 @@ public class ReceiverImpl {
 				//check if symptoms present
 				if (symptoms.size() > 0) {
 					nuggetDAO.updatePatientWithSymptoms(patient, symptoms);
+					nuggetDAO.updatePatientStatScoring(patient);
 				}				
 			} else {
 				//existing patient. Update w SICKEVO

@@ -1,5 +1,6 @@
 package eu.impress.logevo.util;
 
+import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -26,7 +27,9 @@ public class DateUtils {
 	}
 	public static String millisToHours(Long millis) {
 		Double millisInHours = 2.77777778*millis.floatValue()*1e-7;
+		BigDecimal millisInHoursDecimal = new BigDecimal(millisInHours);
 		System.out.println("DEBUG: DATEUTILS.MILLISTOHOURS: Computed: " + millisInHours);
-		return millisInHours.toString();
+		
+		return millisInHoursDecimal.toPlainString();
 	}
 }

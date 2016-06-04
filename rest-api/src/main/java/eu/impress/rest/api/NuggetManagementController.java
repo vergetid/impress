@@ -2,7 +2,9 @@ package eu.impress.rest.api;
 
 import eu.impress.logevo.dao.NuggetDAO;
 import eu.impress.logevo.dao.PatientDAO;
+import eu.impress.logevo.model.PPS;
 import eu.impress.logevo.model.Patient;
+import eu.impress.logevo.model.StatsScoring;
 import eu.impress.repository.dao.NuggetService;
 import eu.impress.repository.model.NuggetDescription;
 import eu.impress.repository.service.NuggetServiceImpl;
@@ -75,5 +77,28 @@ public class NuggetManagementController
         }
                 
 	return new ResponseEntity<Patient>(patient,HttpStatus.OK);
-    }    
+    }  
+    
+    @RequestMapping(
+		value="/statscoring", 
+		method=RequestMethod.GET,
+                produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<StatsScoring>  getStatsScoringbyPatientId(@RequestParam("patientID") String id)
+    {	        
+    	StatsScoring statsScoring;
+		try {
+			statsScoring = patientDAO.findPatientStatScoresbyID(id);
+	        if (statsScoring == null) {
+	        	System.out.println("PPS REST CONTROLLDER: Not found w PatientId " + id);
+	        	return new ResponseEntity<StatsScoring>(statsScoring, HttpStatus.NOT_FOUND);
+	        } else {
+	        	System.out.println("PPS REST CONTROLLDER: Found Patient w Id: " + id);
+	        	return new ResponseEntity<StatsScoring>(statsScoring, HttpStatus.OK);
+	        }			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+    }      
 }

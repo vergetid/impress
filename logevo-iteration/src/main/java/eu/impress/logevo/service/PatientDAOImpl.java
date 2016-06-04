@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import eu.impress.logevo.dao.PatientDAO;
+import eu.impress.logevo.model.PPS;
 import eu.impress.logevo.model.Patient;
+import eu.impress.logevo.model.StatsScoring;
 
 
 @Component
@@ -187,4 +189,93 @@ public class PatientDAOImpl implements PatientDAO {
 		}	
 		return;		
 	}
+
+	@Override
+	public void updatePatientSymptomScore(Patient patient, StatsScoring statsScoring) throws SQLException {
+		try {
+			Class.forName(driver);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Connection connection = DriverManager
+				.getConnection(url,user, password);
+		
+		String sql = "UPDATE Patient " +
+				"SET "
+				+ "etd=?,"
+				+ "gcs=?,"
+				+ "rts=?,"
+				+ "code=?\n"
+				+ "WHERE id = ?";
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, statsScoring.getEtd());
+			ps.setString(2, statsScoring.getGcs());
+			ps.setString(3, statsScoring.getRts());
+			ps.setString(4, statsScoring.getCode());
+			ps.setInt(5, patient.getId());
+			ps.executeUpdate();
+			ps.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+			
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {}
+			}
+		}	
+		return;		
+	}
+
+	@Override
+	public StatsScoring findPatientStatScoresbyID(String id) throws SQLException {
+		StatsScoring statsScoring = new StatsScoring();
+		try {
+			Class.forName(driver);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Connection connection = DriverManager
+				.getConnection(url,user, password);
+		
+		String sql = "SELECT "
+				+ "etd,"
+				+ "gcs,"
+				+ "rts,"
+				+ "code\n"
+				+ " FROM Patient " +
+				"WHERE pseudoID = ?";
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, id);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				statsScoring.setEtd(rs.getString("etd"));
+				statsScoring.setGcs(rs.getString("gcs"));
+				statsScoring.setRts(rs.getString("rts"));
+				statsScoring.setCode(rs.getString("code"));
+				return statsScoring;
+			} else {
+				return null;
+			}
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+			
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {}
+			}
+		}			
+	}
+		
 }
