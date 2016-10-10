@@ -20,5 +20,6 @@ public interface BedAvailabilityService {
     public String createBedAvailabilityDE() throws DatatypeConfigurationException;
     public String getBedAvailabilityEDXLDE(String edxlde, String edxlhave) throws DatatypeConfigurationException;
     public String forwardBedAvailability(String EDXLDEmessage);
-    public String getBedTypeAvailablityHAVE(String hospitalname);    
+    public String getBedTypeAvailablityHAVE(String hospitalname);
+    public String getBedTypeAllAvailablityHAVE();
 }

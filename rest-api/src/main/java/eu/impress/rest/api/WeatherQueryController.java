@@ -41,7 +41,7 @@ public class WeatherQueryController {
 			@RequestParam("latTop") String latTop) {
 		RestTemplate restTemplate = new RestTemplate();
 		String restEndpoint = currentAreaEndpoint+lngLeft+","+latBottom+","+lngRight+","+latTop+",100";
-		restEndpoint += "&appid="+appKey;
+		restEndpoint += "&appid="+appKey+"&units=metric";
 		WeatherCurrent weatherCurrent = 
 				restTemplate.getForObject(restEndpoint, WeatherCurrent.class);			
 		return new ResponseEntity<WeatherCurrent>(weatherCurrent, HttpStatus.OK);
@@ -57,7 +57,7 @@ public class WeatherQueryController {
 			@RequestParam("cnt") String cnt) {
 		RestTemplate restTemplate = new RestTemplate();
 		String restEndpoint = currentCirlcleEndpoint+lat+","+lat+"&lon="+lng+","+lng+"&cnt="+cnt;
-		restEndpoint += "&appid="+appKey;
+		restEndpoint += "&appid="+appKey+"&units=metric";
 		WeatherCurrent weatherCurrent = 
 				restTemplate.getForObject(restEndpoint, WeatherCurrent.class);			
 		return new ResponseEntity<WeatherCurrent>(weatherCurrent, HttpStatus.OK);
@@ -84,7 +84,7 @@ public class WeatherQueryController {
 				"lat=" + lat +
 				"&lon="+lng+
 				"&cnt="+cnt+
-				"&appid="+appKey;
+				"&appid="+appKey+"&units=metric";
 		WeatherForecast weatherForecast = 
 				restTemplate.getForObject(restEndpoint, WeatherForecast.class);		
 		return new ResponseEntity<WeatherForecast>(weatherForecast, HttpStatus.OK);

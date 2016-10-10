@@ -149,5 +149,28 @@ public class BedAvailabilityServiceImpl implements BedAvailabilityService{
         return hospitalstatushave;
 
     }
-    
+
+    @Override
+    public String getBedTypeAllAvailablityHAVE() {
+        String hospitalstatushave;
+        List<eu.impress.repository.model.BedStats> bedStatsList = bedService.getHospitalAllAvailableBedTypes();
+        HospitalStatus hospitalStatus = beansTransformation.BedTypesStatstoHAVE(bedStatsList);
+
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(HospitalStatus.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+            StringWriter sw = new StringWriter();
+            jaxbMarshaller.marshal(hospitalStatus, sw);
+            hospitalstatushave = sw.toString();
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return "Error Marshalling XML Object";
+        }
+
+        return hospitalstatushave;
+
+    }
 }

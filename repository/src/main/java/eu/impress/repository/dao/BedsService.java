@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 public interface BedsService {
 	BedStats getClinicAvailableBeds(Integer clinicId);
 	BedStats getHospitalAvailableBeds(String hospitalName);
+	BedStats getHospitalAllAvailableBeds();
 	List<BedStats> getHospitalAvailableBedTypes(String hospitalName);
-        
+	List<BedStats> getHospitalAllAvailableBedTypes();
 }

@@ -178,7 +178,79 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
                   
 		return bedStatsList;
 	}		*/	
-        
+    public List<BedStats> findHospitalAllAvailableBedsTypes() {
+		String connectionString =
+				sqlendpoint+";"
+						+ "database="+database+";"
+						+ "user="+user+";"
+						+ "password="+password+";"
+						+ "loginTimeout=30;";
+		// Declare the JDBC objects.
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Connection connection = null;
+
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String sql = "SELECT a.HospitalName as HospitalName,"
+					+ "			a.AdultICU as AdultICU, b.AdultICU as AdultICUbaseline,"
+					+ "			 a.PediatricICU as PediatricICU, b.PediatricICU as  PediatricICUbaseline,"
+					+ "			 a.NeonatalICU as NeonatalICU, b.NeonatalICU as NeonatalICUbaseline,"
+					+ "			a.EmergencyDepartment as EmergencyDepartment, b.EmergencyDepartment as EmergencyDepartmentbaseline,"
+					+ "			a.NurseryBeds as NurseryBeds, b.NurseryBeds as NurseryBedsbaseline,"
+					+ "			a.MedicalSurgical as MedicalSurgical, b.MedicalSurgical as MedicalSurgicalbaseline,"
+					+ "			a.RehabLongTermCare as RehabLongTermCare, b.RehabLongTermCare as RehabLongTermCarebaseline,"
+					+ "			a.Burn as Burn, b.Burn as Burnbaseline,"
+					+ "			a.Pediatrics as Pediatrics, b.Pediatrics as Pediatricsbaseline,"
+					+ "			a.AdultPsychiatric as AdultPsychiatric, b.AdultPsychiatric as AdultPsychiatricbaseline,"
+					+ "			a.PediatricPsychiatric as PediatricPsychiatric, b.PediatricPsychiatric as PediatricPsychiatricbaseline,"
+					+ "			a.NegativeFlowIsolation as NegativeFlowIsolation, b.NegativeFlowIsolation as NegativeFlowIsolationbaseline,"
+					+ "			a.OtherIsolation as OtherIsolation, b.OtherIsolation as OtherIsolationbaseline,"
+					+ "			a.OperatingRooms as OperatingRooms, b.OperatingRooms as OperatingRoomsbaseline\n"
+					+ "FROM "
+					+ "	HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate as a,"
+					+ "	HIS_RES_Hospital_Clinics_Capability as b"
+					+ "	WHERE"
+					+ "	a.HospitalID = b.HospitalID\n"
+					+ "";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				List<BedStats> bedStatsList = new ArrayList<BedStats>();
+				String clinics[] = {"AdultICU", "PediatricICU", "NeonatalICU", "EmergencyDepartment",
+						"NurseryBeds", "MedicalSurgical", "RehabLongTermCare", "Burn", "Pediatrics",
+						"AdultPsychiatric", "PediatricPsychiatric", "NegativeFlowIsolation",
+						"OtherIsolation", "OperatingRooms"};
+				for (String clinic : clinics) {
+					BedStats bedStats = new BedStats();
+					bedStats.setHospitalName(rs.getString("HospitalName"));
+					bedStats.setClinicType(clinic);
+					bedStats.setAvailabeBeds(rs.getInt(clinic));
+					bedStats.setBaselineBeds(rs.getInt(clinic+"baseline"));
+					bedStatsList.add(bedStats);
+				}
+				return bedStatsList;
+
+			} else {
+				return null;
+			}
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+
+		finally {
+			if (connection != null) try { connection.close(); } catch(Exception e) {}
+		}
+		return null;
+	}
 	public List<BedStats> findHospitalAvailableBedsTypes(String hospital) {
         String connectionString =
                 sqlendpoint+";"
