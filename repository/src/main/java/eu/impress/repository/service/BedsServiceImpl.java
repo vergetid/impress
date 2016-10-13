@@ -25,10 +25,23 @@ public class BedsServiceImpl implements BedsService {
 		return bedStats;
 	}
 
-        @Override
-        public List<BedStats> getHospitalAvailableBedTypes(String hospitalName) {
+	@Override
+	public BedStats getHospitalAllAvailableBeds() {
+		//BedStats bedStats = bedsQueryEngine.findHospitalAvailableBedsAllClinics();
+		//return bedStats;
+		return null;
+	}
+
+	@Override
+	public List<BedStats> getHospitalAvailableBedTypes(String hospitalName) {
 		List<BedStats> bedStatslist = bedsQueryEngine.findHospitalAvailableBedsTypes(hospitalName);
 		return bedStatslist;            
-        }        
-        
+	}
+
+	@Override
+	public List<BedStats> getHospitalAllAvailableBedTypes() {
+		List<BedStats> bedStatslist = bedsQueryEngine.findHospitalAllAvailableBedsTypes();
+		return bedStatslist;
+	}
+
 }

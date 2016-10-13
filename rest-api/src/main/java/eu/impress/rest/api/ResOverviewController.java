@@ -24,7 +24,7 @@ public class ResOverviewController {
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE
 	)
-	public ResponseEntity<ResOverview> getWeatherInRectangle(
+	public ResponseEntity<ResOverview> getResOverview(
 			@RequestParam("incidentId") String incidentId) {
 		ResOverview resOverview = resOverviewDAO.getResOverview(incidentId);
 		return new ResponseEntity<ResOverview>(resOverview, HttpStatus.OK);

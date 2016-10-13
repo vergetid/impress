@@ -74,5 +74,47 @@ public class BedsAvailabilityEMCRController {
                 }
 		return new ResponseEntity(HttpStatus.OK);
                 
-	}	
+	}
+
+    @RequestMapping(
+            value="/publish/beds/available/all",
+            method=RequestMethod.GET)
+    public ResponseEntity<String> getAvailableBedsAllXML() {
+        String bedavailability;
+        String bedavailabilityDEEnvelope;
+        String bedavailabilityDE;
+        String bedavailabilityJSON;
+        try
+        {
+            //get HAVE String
+            bedavailability = b.getBedTypeAllAvailablityHAVE();
+            System.err.println(" - bedAvail: " + bedavailability);
+
+            //get DE String
+            bedavailabilityDEEnvelope = b.createBedAvailabilityDE();
+
+            //encapsulate in DE
+            bedavailabilityDE = b.getBedAvailabilityEDXLDE(bedavailabilityDEEnvelope, bedavailability);
+
+            //produce json message
+            bedavailabilityJSON = b.forwardBedAvailability(bedavailabilityDE);
+            log.info("Json message: " + bedavailabilityJSON);
+
+            //push message to EMCR
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<String> entity = new HttpEntity<String>(bedavailabilityJSON ,headers);
+            String answer = restTemplate.postForObject(EMCRUrl, entity, String.class);
+
+            log.info("EMCR response: " + answer);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return new ResponseEntity(HttpStatus.OK);
+
+    }
 }
