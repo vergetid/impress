@@ -55,7 +55,7 @@ public class EDXLlib {
         ed.setSenderID("urn://impress/dhc/bedavailability");
         
         //country.add("GR");
-        country.add("IT");
+        country.add("ME");
         tatype.setCountry(country);
         targetArea.add(tatype);
         ed.setTargetArea(targetArea);
@@ -67,7 +67,7 @@ public class EDXLlib {
         
         vstype.setExplicitAddressScheme("urn");
         //explicitAddressValue.add("urn://agency/keelpno");
-        explicitAddressValue.add("urn://it.gov.ems");
+        explicitAddressValue.add("urn://me.gov.incimag");
         vstype.setExplicitAddressValue(explicitAddressValue);
         explicitAddress.add(vstype);
         ed.setExplicitAddress(explicitAddress);
