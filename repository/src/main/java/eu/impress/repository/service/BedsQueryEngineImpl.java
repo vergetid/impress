@@ -289,11 +289,13 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
     				+ "	HIS_RES_Hospital_Clinics_Capability as b"
     				+ "	WHERE"
     				+ "	a.HospitalID = b.HospitalID AND\n"
-    				+ " a.HospitalName = ?\n"
+    				+ " a.HospitalName LIKE ?\n"
     				+ "";
 			PreparedStatement ps = connection.prepareStatement(sql);
-			ps.setString(1, hospital);
+			ps.setString(1, "%"+hospital+"%");
 			ResultSet rs = ps.executeQuery();
+			System.out.println("GENERATED QUERY: ");
+			System.out.println(sql);
 			if (rs.next()) {
 				  List<BedStats> bedStatsList = new ArrayList<BedStats>();
 				  String clinics[] = {"AdultICU", "PediatricICU", "NeonatalICU", "EmergencyDepartment",
