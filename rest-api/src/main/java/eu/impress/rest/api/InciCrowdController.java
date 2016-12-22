@@ -1,13 +1,17 @@
 package eu.impress.rest.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.impress.repository.dao.ObservationDAO;
+import eu.impress.repository.model.incicrowd.PutObservationRequestBody;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by jim on 4/12/2016.
@@ -17,6 +21,8 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping(value="/incicrowd")
 public class InciCrowdController {
 
+    @Autowired
+    ObservationDAO observationDAO;
     @RequestMapping(
             value="/getAlertDetails",
             method= RequestMethod.GET,
@@ -44,9 +50,20 @@ public class InciCrowdController {
             method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> sendObservation() {
+    public ResponseEntity<Void> sendObservation(@RequestBody String request) {
         RestTemplate restTemplate = new RestTemplate();
-
+        ObjectMapper objectMapper = new ObjectMapper();
+        PutObservationRequestBody putObservationRequestBody = null;
+        try {
+            putObservationRequestBody = objectMapper.readValue(request, PutObservationRequestBody.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            observationDAO.saveObservation(putObservationRequestBody.getPutObservation());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 

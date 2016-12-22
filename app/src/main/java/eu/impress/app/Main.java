@@ -36,7 +36,7 @@ import eu.impress.repository.service.SimulateReceiveMessage;
 public class Main extends SpringBootServletInitializer {
     
 	//Development only
-	private @Value("${tepfiles.location}") static String tepFileName;
+	/*private @Value("${tepfiles.location}") static String tepFileName;
     @Bean
     JmsListenerContainerFactory<?> myJmsContainerFactory(ConnectionFactory connectionFactory) {
         SimpleJmsListenerContainerFactory factory = new SimpleJmsListenerContainerFactory();
@@ -47,7 +47,7 @@ public class Main extends SpringBootServletInitializer {
         factory.setClientId("intl-89890");
         return factory;
     }
-    
+    */
     public static void main(String... args) throws IOException{
         FileSystemUtils.deleteRecursively(new File("activemq-data"));
     ApplicationContext ctx = SpringApplication.run(Main.class, args);
