@@ -1,6 +1,7 @@
 package eu.impress.repository.service;
 
 import eu.impress.repository.dao.ObservationDAO;
+import eu.impress.repository.model.incicrowd.DeleteObservation;
 import eu.impress.repository.model.incicrowd.PutObservation;
 import org.springframework.stereotype.Component;
 
@@ -52,6 +53,39 @@ public class ObservationDAOImpl implements ObservationDAO{
             ps.setDouble(5, observation.getLongitude());
             ps.setString(6, observation.getText());
             ps.setString(7, observation.getImage());
+            ps.executeUpdate();
+            ps.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {}
+            }
+        }
+        return;
+    }
+
+    @Override
+    public void deleteObservation(DeleteObservation observation) throws SQLException {
+        try {
+            Class.forName(driver);
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Connection connection = DriverManager
+                .getConnection(url,user, password);
+
+        String sql = "DELETE FROM Observation " +
+                "WHERE observationID = ?";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, observation.getObservationID());
             ps.executeUpdate();
             ps.close();
 
