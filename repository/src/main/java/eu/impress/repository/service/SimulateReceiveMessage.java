@@ -4,15 +4,26 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
 import javax.xml.parsers.ParserConfigurationException;
 
 import eu.impress.repository.dao.AlertDAO;
 import eu.impress.repository.model.incicrowd.Alert;
 import eu.impress.repository.util.incicrowd.CapParsingUtil;
+import eu.impress.repository.util.incicrowd.CapUpdateBusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.ApplicationContext;
+import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.xml.sax.SAXException;
@@ -29,16 +40,18 @@ import eu.impress.logevo.util.TepParsingUtil;
 //Simulates the interception of a TEP Message
 //Can work without a connection to the ActiveMQ
 
-
+@Component
+@EnableJms
 public class SimulateReceiveMessage {
 
 	// @Autowired
 	// ConfigurableApplicationContext context;
 	//@Autowired
 	//AlertDAO alertDAO;
+	@Autowired
+	private ApplicationContext ctx;
 	public void receivCAP(String message) {
 		String alertID;
-		String time;
 		String headline;
 		String sender;
 		String description;
@@ -59,6 +72,8 @@ public class SimulateReceiveMessage {
 AlertDAO alertDAO = new AlertDAOImpl();
 		try {
 			alertDAO.storeAlert(alert);
+			String alerthash = CapUpdateBusMessage.pushAlert(alert);
+			publishToTopic("IMPRESS.InciCrowd.Alerts", alerthash);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -130,5 +145,19 @@ System.err.println("SIMULATION: RECEIVED: " + message);
 		}*/
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
+	private void publishToTopic(String topicName, String msg)
+	{
+		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 
+		MessageCreator messageCreator = new MessageCreator() {
+			@Override
+			public Message createMessage(Session session) throws JMSException {
+				return session.createTextMessage(msg);
+			}
+		};
+
+		JmsTemplate jmsTemplate = ctx.getBean(JmsTemplate.class);
+		Logger.getLogger(SimulateReceiveMessage.class.getName()).log(Level.INFO, "Sending message down the topic");
+		jmsTemplate.send(topicName, messageCreator);
+	}
 }

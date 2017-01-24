@@ -5,8 +5,8 @@ package eu.impress.repository.model.incicrowd;
  */
 public class PutObservationSuccess {
     public static final String PUTOBSERVATION_SUCCESS= "{" +
-            "\"putObservation:\": {"+
-                "\"response:\": \"SUCCESS\"" +
+            "\"putObservation\": {"+
+                "\"response\": \"SUCCESS\"" +
             "}" +
         "}";
 

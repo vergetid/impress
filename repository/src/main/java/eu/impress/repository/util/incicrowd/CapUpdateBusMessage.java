@@ -13,6 +13,9 @@ public class CapUpdateBusMessage {
         String message = null;
         message = "10";
         message += alert.getAlertID();
+        message+="25.43";
+        message+="54.24";
+        message+="8000";
         CRC32 crc = new CRC32();
         crc.update(message.getBytes());
         message+=Long.toString(crc.getValue());

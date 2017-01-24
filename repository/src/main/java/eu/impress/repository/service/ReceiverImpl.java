@@ -7,6 +7,7 @@ import eu.impress.logevo.model.Patient;
 import eu.impress.logevo.util.Asset;
 import eu.impress.logevo.util.LogevoCallsEnvelopeFactory;
 import eu.impress.logevo.util.TepParsingUtil;
+import eu.impress.repository.dao.AlertDAO;
 import eu.impress.repository.dao.Receiver;
 
 import java.io.BufferedWriter;
@@ -18,15 +19,26 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.SOAPException;
 
+import eu.impress.repository.model.incicrowd.Alert;
+import eu.impress.repository.util.incicrowd.CapParsingUtil;
+import eu.impress.repository.util.incicrowd.CapUpdateBusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
 import org.w3c.dom.Document;
@@ -38,8 +50,39 @@ public class ReceiverImpl {
 	PatientDAO patientDAO;
 	@Autowired
 	NuggetDAO nuggetDAO;
-	 @Autowired
-	 ConfigurableApplicationContext context;
+	@Autowired
+	ConfigurableApplicationContext context;
+	@Autowired
+	AlertDAO alertDAO;
+	private ApplicationContext ctx;
+	@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
+	public void receivCAP(String message) {
+		String alertID;
+		String headline;
+		String sender;
+		String description;
+		String area;
+		try {
+			alertID = CapParsingUtil.getIncidentId(message);
+			headline = CapParsingUtil.getHeader(message);
+			description = CapParsingUtil.getDescription(message);
+			sender = CapParsingUtil.getSender(message);
+			area = CapParsingUtil.getArea(message);
+		} catch (ParserConfigurationException | SAXException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
+		Long timeNow = System.currentTimeMillis();
+		Alert alert = new Alert(alertID, timeNow, sender, headline, description, area);
+		try {
+			alertDAO.storeAlert(alert);
+			String alerthash = CapUpdateBusMessage.pushAlert(alert);
+			publishToTopic("IMPRESS.InciCrowd.Alerts", alerthash);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	// ?consumer.retroactive=true&consumer.prefetchSize=10
 	 //@JmsListener(destination = "ActiveMQ.Advisory.Consumer.Topic.IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
 	//@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
@@ -129,5 +172,19 @@ public class ReceiverImpl {
 		//}
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
+	private void publishToTopic(String topicName, String msg)
+	{
+		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 
+		MessageCreator messageCreator = new MessageCreator() {
+			@Override
+			public Message createMessage(Session session) throws JMSException {
+				return session.createTextMessage(msg);
+			}
+		};
+
+		JmsTemplate jmsTemplate = ctx.getBean(JmsTemplate.class);
+		Logger.getLogger(SimulateReceiveMessage.class.getName()).log(Level.INFO, "Sending message down the topic");
+		jmsTemplate.send(topicName, messageCreator);
+	}
 }
