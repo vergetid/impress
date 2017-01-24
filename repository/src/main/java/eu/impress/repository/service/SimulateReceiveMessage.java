@@ -7,6 +7,9 @@ import java.text.ParseException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import eu.impress.repository.dao.AlertDAO;
+import eu.impress.repository.model.incicrowd.Alert;
+import eu.impress.repository.util.incicrowd.CapParsingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.jms.annotation.JmsListener;
@@ -31,6 +34,35 @@ public class SimulateReceiveMessage {
 
 	// @Autowired
 	// ConfigurableApplicationContext context;
+	//@Autowired
+	//AlertDAO alertDAO;
+	public void receivCAP(String message) {
+		String alertID;
+		String time;
+		String headline;
+		String sender;
+		String description;
+		String area;
+		try {
+			alertID = CapParsingUtil.getIncidentId(message);
+			headline = CapParsingUtil.getHeader(message);
+			description = CapParsingUtil.getDescription(message);
+			sender = CapParsingUtil.getSender(message);
+			area = CapParsingUtil.getArea(message);
+		} catch (ParserConfigurationException | SAXException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
+		Long timeNow = System.currentTimeMillis();
+		Alert alert = new Alert(alertID, timeNow, sender, headline, description, area);
+AlertDAO alertDAO = new AlertDAOImpl();
+		try {
+			alertDAO.storeAlert(alert);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	// ?consumer.retroactive=true&consumer.prefetchSize=10
 	//@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")	
 	public void receiveMessage(String message) {

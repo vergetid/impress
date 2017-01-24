@@ -11,7 +11,7 @@ public class DistanceUtil {
         Double a =
                 Math.sin(dLat/2.0)*Math.sin(dLat/2.0)
                 + Math.cos(Math.toRadians(lat1))*Math.cos(Math.toRadians(lat2))
-                + Math.sin(dLon/2.0)*Math.sin(dLon/2.0);
+                * Math.sin(dLon/2.0)*Math.sin(dLon/2.0);
         Double c = 2.0 * Math.asin(Math.sqrt(a));
         Double d = earth_radius * c;
         return d;

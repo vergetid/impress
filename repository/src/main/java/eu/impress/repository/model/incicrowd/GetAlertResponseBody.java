@@ -1,11 +1,9 @@
 package eu.impress.repository.model.incicrowd;
 
-import java.io.Serializable;
-
 /**
- * Created by jim on 4/12/2016.
+ * Created by jim on 24/1/2017.
  */
-public class Alert implements Serializable {
+public class GetAlertResponseBody {
     String response;
     String alertID;
     Long time;
@@ -15,7 +13,7 @@ public class Alert implements Serializable {
     //TODO: check the time for area. String in response string but internal representation may be list of points
     String area;
 
-    public Alert(String alertID, Long time, String sender, String headline, String description, String area) {
+    public GetAlertResponseBody(String alertID, Long time, String sender, String headline, String description, String area) {
         this.response = response;
         this.alertID = alertID;
         this.time = time;
@@ -23,6 +21,9 @@ public class Alert implements Serializable {
         this.headline = headline;
         this.description = description;
         this.area = area;
+    }
+
+    public GetAlertResponseBody() {
     }
 
     public String getResponse() {
@@ -81,7 +82,4 @@ public class Alert implements Serializable {
         this.area = area;
     }
 
-    public Alert() {
-
-    }
 }

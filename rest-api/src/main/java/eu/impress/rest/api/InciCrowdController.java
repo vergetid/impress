@@ -1,6 +1,7 @@
 package eu.impress.rest.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.impress.repository.dao.AlertDAO;
 import eu.impress.repository.dao.ObservationDAO;
 import eu.impress.repository.dao.OfferDAO;
 import eu.impress.repository.model.incicrowd.*;
@@ -26,15 +27,38 @@ public class InciCrowdController {
     ObservationDAO observationDAO;
     @Autowired
     OfferDAO offerDAO;
+    @Autowired
+    AlertDAO alertDAO;
     @RequestMapping(
             value="/getAlertDetails",
             method= RequestMethod.GET,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> getAlertDetails() {
+    public ResponseEntity<GetAlertResponseBody> getAlertDetails(@RequestParam String param) {
         RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper objectMapper = new ObjectMapper();
+        GetAlertRequestBody getAlertRequestBody = null;
+        GetAlertResponseBody response = new GetAlertResponseBody();
+        try {
+            getAlertRequestBody = objectMapper.readValue(param, GetAlertRequestBody.class);
+        } catch (IOException e) {
+            e.printStackTrace();
 
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        try {
+            //observationDAO.saveObservation(putObservationRequestBody.getPutObservation());
+            response = alertDAO.getAlert(getAlertRequestBody.getGetAlert().getAlertID());
+            if (response == null) {
+                return new ResponseEntity<GetAlertResponseBody>(HttpStatus.NOT_FOUND);
+            } else {
+                response.setResponse("SUCCESS");
+                return new ResponseEntity<GetAlertResponseBody>(response, HttpStatus.OK);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return new ResponseEntity<GetAlertResponseBody>(response, HttpStatus.OK);
     }
 
     @RequestMapping(
