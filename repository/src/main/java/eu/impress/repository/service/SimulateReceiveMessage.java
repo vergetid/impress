@@ -72,8 +72,8 @@ public class SimulateReceiveMessage {
 AlertDAO alertDAO = new AlertDAOImpl();
 		try {
 			alertDAO.storeAlert(alert);
-			String alerthash = CapUpdateBusMessage.pushAlert(alert);
-			publishToTopic("IMPRESS.InciCrowd.Alerts", alerthash);
+			//String alerthash = CapUpdateBusMessage.pushAlert(alert);
+			//publishToTopic("IMPRESS.InciCrowd.Alerts", alerthash);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
