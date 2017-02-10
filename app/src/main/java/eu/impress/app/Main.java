@@ -46,7 +46,17 @@ public class Main extends SpringBootServletInitializer {
         factory.setPubSubDomain(true);
         factory.setReplyPubSubDomain(true);
         factory.setSubscriptionDurable(true);        
-        factory.setClientId("intl-89890");
+        factory.setClientId("intl-89818");
+        return factory;
+    }
+    @Bean
+    JmsListenerContainerFactory<?> alertJmsContainerFactory(ConnectionFactory connectionFactory) {
+        SimpleJmsListenerContainerFactory factory = new SimpleJmsListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setPubSubDomain(true);
+        factory.setReplyPubSubDomain(true);
+        factory.setSubscriptionDurable(true);
+        factory.setClientId("intl-89819");
         return factory;
     }
 

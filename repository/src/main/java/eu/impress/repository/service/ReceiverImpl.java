@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -50,12 +52,13 @@ public class ReceiverImpl {
 	PatientDAO patientDAO;
 	@Autowired
 	NuggetDAO nuggetDAO;
-	@Autowired
-	ConfigurableApplicationContext context;
+	//@Autowired
+	//ConfigurableApplicationContext context;
 	@Autowired
 	AlertDAO alertDAO;
+	@Autowired
 	private ApplicationContext ctx;
-	@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
+	@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89818")
 	public void receivCAP(String message) {
 		String alertID;
 		String headline;
@@ -77,15 +80,16 @@ public class ReceiverImpl {
 		Alert alert = new Alert(alertID, timeNow, sender, headline, description, area);
 		try {
 			alertDAO.storeAlert(alert);
-			String alerthash = CapUpdateBusMessage.pushAlert(alert);
-			publishToTopic("IMPRESS.InciCrowd.Alerts", alerthash);
+			CapUpdateBusMessage.pushAlert(alert);
+			publishToTopic("IMPRESS.InciCrowd.Alerts", CapUpdateBusMessage.pushAlert(alert));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
 	// ?consumer.retroactive=true&consumer.prefetchSize=10
 	 //@JmsListener(destination = "ActiveMQ.Advisory.Consumer.Topic.IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
-	//@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
+	//@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89813")
 	 //@JmsListener(destination = "IMPRESS.IncidentMgmt.Messages", containerFactory = "myJmsContainerFactory", subscription = "intl-89890-55")
 	//@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
 	public void receiveMessage(String message) {
@@ -172,14 +176,23 @@ public class ReceiverImpl {
 		//}
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
-	private void publishToTopic(String topicName, String msg)
+	@JmsListener(destination = "IMPRESS/InciCrowd/Alerts", containerFactory = "alertJmsContainerFactory", subscription = "intl-89819")
+	public void receiveLocationUpdate(String message) {
+		System.out.println("Received location update: ");
+		System.out.println(message);
+		FileSystemUtils.deleteRecursively(new File("activemq-data"));
+	}
+
+	private void publishToTopic(String topicName, ByteBuffer msg)
 	{
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 
 		MessageCreator messageCreator = new MessageCreator() {
 			@Override
 			public Message createMessage(Session session) throws JMSException {
-				return session.createTextMessage(msg);
+				BytesMessage bytesMessage = session.createBytesMessage();
+				bytesMessage.writeBytes(msg.array());
+				return bytesMessage;
 			}
 		};
 
