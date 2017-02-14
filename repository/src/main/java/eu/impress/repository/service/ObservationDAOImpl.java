@@ -70,7 +70,7 @@ public class ObservationDAOImpl implements ObservationDAO{
     }
 
     @Override
-    public void deleteObservation(DeleteObservation observation) throws SQLException {
+    public void deleteObservation(String observationID) throws SQLException {
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {
@@ -85,7 +85,7 @@ public class ObservationDAOImpl implements ObservationDAO{
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, observation.getObservationID());
+            ps.setString(1, observationID);
             ps.executeUpdate();
             ps.close();
 

@@ -58,7 +58,7 @@ public class ReceiverImpl {
 	AlertDAO alertDAO;
 	@Autowired
 	private ApplicationContext ctx;
-	@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89818")
+	@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89824")
 	public void receivCAP(String message) {
 		String alertID;
 		String headline;
@@ -176,7 +176,7 @@ public class ReceiverImpl {
 		//}
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
-	@JmsListener(destination = "IMPRESS/InciCrowd/Alerts", containerFactory = "alertJmsContainerFactory", subscription = "intl-89819")
+	@JmsListener(destination = "IMPRESS/InciCrowd/Alerts", containerFactory = "alertJmsContainerFactory", subscription = "intl-89823")
 	public void receiveLocationUpdate(String message) {
 		System.out.println("Received location update: ");
 		System.out.println(message);

@@ -10,5 +10,5 @@ import java.sql.SQLException;
  */
 public interface ObservationDAO {
     public void saveObservation(PutObservation observation) throws SQLException;
-    public void deleteObservation(DeleteObservation observation) throws SQLException;
+    public void deleteObservation(String observationID) throws SQLException;
 }
