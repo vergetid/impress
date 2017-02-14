@@ -5,15 +5,30 @@ import eu.impress.repository.dao.AlertDAO;
 import eu.impress.repository.dao.ObservationDAO;
 import eu.impress.repository.dao.OfferDAO;
 import eu.impress.repository.model.incicrowd.*;
+import eu.impress.repository.service.SimulateReceiveMessage;
+import eu.impress.repository.util.incicrowd.CapParsingUtil;
+import eu.impress.repository.util.incicrowd.CapUpdateBusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.jms.BytesMessage;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by jim on 4/12/2016.
@@ -29,6 +44,8 @@ public class InciCrowdController {
     OfferDAO offerDAO;
     @Autowired
     AlertDAO alertDAO;
+    @Autowired
+    private ApplicationContext ctx;
     @RequestMapping(
             value="/getAlertDetails",
             method= RequestMethod.GET,
@@ -89,8 +106,10 @@ public class InciCrowdController {
         }
         try {
             observationDAO.saveObservation(putObservationRequestBody.getPutObservation());
+            publishToTopic("IMPRESS.InciCrowd.Observation", CapUpdateBusMessage.pushObservation(putObservationRequestBody.getPutObservation()));
         } catch (SQLException e) {
             e.printStackTrace();
+
             return new ResponseEntity<String>(PutObservationError.PUTOBSERVATION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<String>(PutObservationSuccess.PUTOBSERVATION_SUCCESS, HttpStatus.OK);
@@ -112,7 +131,7 @@ public class InciCrowdController {
             return null;
         }
         try {
-            observationDAO.deleteObservation(deleteObservationRequestBody.getDeleteObservation());
+            observationDAO.deleteObservation(deleteObservationRequestBody.getDeleteObservation().getObservationID());
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -236,5 +255,23 @@ public class InciCrowdController {
         RestTemplate restTemplate = new RestTemplate();
 
         return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    private void publishToTopic(String topicName, ByteBuffer msg)
+    {
+        FileSystemUtils.deleteRecursively(new File("activemq-data"));
+
+        MessageCreator messageCreator = new MessageCreator() {
+            @Override
+            public Message createMessage(Session session) throws JMSException {
+                BytesMessage bytesMessage = session.createBytesMessage();
+                bytesMessage.writeBytes(msg.array());
+                return bytesMessage;
+            }
+        };
+
+        JmsTemplate jmsTemplate = ctx.getBean(JmsTemplate.class);
+        Logger.getLogger(SimulateReceiveMessage.class.getName()).log(Level.INFO, "Sending message down the topic");
+        jmsTemplate.send(topicName, messageCreator);
     }
 }
