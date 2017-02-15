@@ -3,6 +3,7 @@ package eu.impress.rest.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.impress.repository.dao.AlertDAO;
 import eu.impress.repository.dao.ObservationDAO;
+import eu.impress.repository.dao.ObservationService;
 import eu.impress.repository.dao.OfferDAO;
 import eu.impress.repository.model.incicrowd.*;
 import eu.impress.repository.service.SimulateReceiveMessage;
@@ -38,6 +39,8 @@ import java.util.logging.Logger;
 @RequestMapping(value="/incicrowd")
 public class InciCrowdController {
 
+    @Autowired
+    ObservationService observationService;
     @Autowired
     ObservationDAO observationDAO;
     @Autowired
@@ -106,6 +109,11 @@ public class InciCrowdController {
         }
         try {
             observationDAO.saveObservation(putObservationRequestBody.getPutObservation());
+
+            //forward to EMCR
+
+
+            //forward to activemq
             publishToTopic("IMPRESS.InciCrowd.Observation", CapUpdateBusMessage.pushObservation(putObservationRequestBody.getPutObservation()));
         } catch (SQLException e) {
             e.printStackTrace();
