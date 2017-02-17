@@ -9,11 +9,11 @@ import eu.impress.repository.model.incicrowd.*;
 import eu.impress.repository.service.SimulateReceiveMessage;
 import eu.impress.repository.util.incicrowd.CapParsingUtil;
 import eu.impress.repository.util.incicrowd.CapUpdateBusMessage;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.util.FileSystemUtils;
@@ -24,6 +24,7 @@ import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -49,6 +50,11 @@ public class InciCrowdController {
     AlertDAO alertDAO;
     @Autowired
     private ApplicationContext ctx;
+    @Value("${connections.incimag.emcr.endpoint.message}")
+    private String EMCRUrl;
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(eu.impress.rest.api.InciCrowdController.class);
+
     @RequestMapping(
             value="/getAlertDetails",
             method= RequestMethod.GET,
@@ -110,7 +116,30 @@ public class InciCrowdController {
         try {
             observationDAO.saveObservation(putObservationRequestBody.getPutObservation());
 
-            //forward to EMCR
+
+            //get SITREP String
+            String sitRepStr = observationService.getObservationSitrep(putObservationRequestBody.getPutObservation());
+            log.info("SitrepStr: " + sitRepStr);
+
+            //get DE Envelope for Sitrep
+            String sitRepEnvelopeStr = observationService.createObservationDE();
+
+            //encapsulate in DE
+            String observationDEStr = observationService.getSitrepEDXLDE(sitRepEnvelopeStr, sitRepStr);
+
+            //produce JSON message
+            String observationJson = observationService.forwardSitrep(observationDEStr);
+            log.info("Will send to EMCR Json: " + observationJson);
+
+            //push message to EMCR
+            RestTemplate restTemplateSitrep = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<String> entity = new HttpEntity<String>(observationJson ,headers);
+            String answer = restTemplateSitrep.postForObject(EMCRUrl, entity, String.class);
+
+            log.info("EMCR response: " + answer);
 
 
             //forward to activemq
@@ -119,6 +148,8 @@ public class InciCrowdController {
             e.printStackTrace();
 
             return new ResponseEntity<String>(PutObservationError.PUTOBSERVATION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (DatatypeConfigurationException e) {
+            e.printStackTrace();
         }
         return new ResponseEntity<String>(PutObservationSuccess.PUTOBSERVATION_SUCCESS, HttpStatus.OK);
     }

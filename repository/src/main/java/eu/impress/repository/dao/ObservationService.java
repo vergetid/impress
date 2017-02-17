@@ -10,5 +10,10 @@ import javax.xml.datatype.DatatypeConfigurationException;
 public interface ObservationService {
     public void saveObservation(PutObservation observation);
     public String createObservationDE() throws DatatypeConfigurationException;
+
+    String getSitrepEDXLDE(String edxlde, String edxlSitrep) throws DatatypeConfigurationException;
+
+    String forwardSitrep(String DEmessage);
+
     public String getObservationSitrep(PutObservation observation);
 }

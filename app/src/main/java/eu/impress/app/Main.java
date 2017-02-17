@@ -46,7 +46,7 @@ public class Main extends SpringBootServletInitializer {
         factory.setPubSubDomain(true);
         factory.setReplyPubSubDomain(true);
         factory.setSubscriptionDurable(true);        
-        factory.setClientId("intl-89823");
+        factory.setClientId("intl-89823-test");
         return factory;
     }
     @Bean
@@ -56,7 +56,7 @@ public class Main extends SpringBootServletInitializer {
         factory.setPubSubDomain(true);
         factory.setReplyPubSubDomain(true);
         factory.setSubscriptionDurable(true);
-        factory.setClientId("intl-89824");
+        factory.setClientId("intl-89824-test");
         return factory;
     }
 
