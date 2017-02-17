@@ -72,12 +72,12 @@ public class BedAvailabilityServiceImpl implements BedAvailabilityService{
     }
         
     @Override
-    public String createBedAvailabilityDE() throws DatatypeConfigurationException{
+    public String createBedAvailabilityDE(String countryParam) throws DatatypeConfigurationException{
         
         String DEmessageenvelope="";
         String DEmessage="";
         
-        EDXLDistribution ed = EDXLlib.createEDXLEnvelope();
+        EDXLDistribution ed = EDXLlib.createEDXLEnvelope(countryParam);
 
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(EDXLDistribution.class);

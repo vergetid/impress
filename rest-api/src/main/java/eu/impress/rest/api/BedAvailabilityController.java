@@ -52,7 +52,7 @@ public class BedAvailabilityController {
         bedavailability = b.getBedAvailablityHAVE(hospitalName);
 
         //get DE String
-        bedavailabilityDEEnvelope = b.createBedAvailabilityDE();
+        bedavailabilityDEEnvelope = b.createBedAvailabilityDE("GR");
 
         //encapsulate in DE
         bedavailabilityDE = b.getBedAvailabilityEDXLDE(bedavailabilityDEEnvelope, bedavailability);

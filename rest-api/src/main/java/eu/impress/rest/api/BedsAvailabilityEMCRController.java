@@ -37,7 +37,8 @@ public class BedsAvailabilityEMCRController {
 	@RequestMapping(
 			value="/publish/beds/available", 
 			method=RequestMethod.GET)
-	public ResponseEntity<String> getAvailableBedsXML(@RequestParam("hospital") String hospitalName) {	
+	public ResponseEntity<String> getAvailableBedsXML(@RequestParam("hospital") String hospitalName,
+                                                      @RequestParam(value="country", required=false) String country) {
                 String bedavailability;
                 String bedavailabilityDEEnvelope;
                 String bedavailabilityDE;
@@ -49,7 +50,7 @@ public class BedsAvailabilityEMCRController {
                     System.err.println(" - bedAvail: " + bedavailability);
                     
                     //get DE String
-                    bedavailabilityDEEnvelope = b.createBedAvailabilityDE();
+                    bedavailabilityDEEnvelope = b.createBedAvailabilityDE(country);
 
                     //encapsulate in DE
                     bedavailabilityDE = b.getBedAvailabilityEDXLDE(bedavailabilityDEEnvelope, bedavailability);
@@ -91,7 +92,7 @@ public class BedsAvailabilityEMCRController {
             System.err.println(" - bedAvail: " + bedavailability);
 
             //get DE String
-            bedavailabilityDEEnvelope = b.createBedAvailabilityDE();
+            bedavailabilityDEEnvelope = b.createBedAvailabilityDE("GR");
 
             //encapsulate in DE
             bedavailabilityDE = b.getBedAvailabilityEDXLDE(bedavailabilityDEEnvelope, bedavailability);

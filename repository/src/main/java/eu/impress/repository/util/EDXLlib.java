@@ -34,7 +34,7 @@ public class EDXLlib {
     /*
     Creates the EDXL-DE envelope with empty EmbeddedXMLContent
     */
-    public static EDXLDistribution createEDXLEnvelope() throws DatatypeConfigurationException{
+    public static EDXLDistribution createEDXLEnvelope(String countryParam) throws DatatypeConfigurationException{
         
         List<String> country = new ArrayList<String>();
         List<TargetAreaType> targetArea = new ArrayList<TargetAreaType>();
@@ -55,7 +55,11 @@ public class EDXLlib {
         ed.setSenderID("urn://impress/dhc/bedavailability");
         
         //country.add("GR");
-        country.add("ME");
+        if (countryParam == null) {
+            country.add("GR");
+        } else {
+            country.add(countryParam);
+        }
         tatype.setCountry(country);
         targetArea.add(tatype);
         ed.setTargetArea(targetArea);
