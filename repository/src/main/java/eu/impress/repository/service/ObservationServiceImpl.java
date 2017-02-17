@@ -4,6 +4,7 @@ import eu.impress.repository.dao.ObservationService;
 import eu.impress.repository.model.incicrowd.PutObservation;
 import eu.impress.repository.util.EDXLlib;
 import oasis.names.tc.emergency.EDXL.DE._1.EDXLDistribution;
+import org.springframework.stereotype.Component;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,6 +15,7 @@ import java.io.StringWriter;
 /**
  * Created by jim on 21/12/2016.
  */
+@Component
 public class ObservationServiceImpl implements ObservationService {
     @Override
     public void saveObservation(PutObservation observation) {

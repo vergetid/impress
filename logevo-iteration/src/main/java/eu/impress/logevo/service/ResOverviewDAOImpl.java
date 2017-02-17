@@ -29,7 +29,7 @@ public class ResOverviewDAOImpl implements ResOverviewDAO {
         try {
         	SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
 			SOAPConnection soapConnection = soapConnectionFactory.createConnection();
-			String url = "http://150.146.5.15/webservices/IMPRESS2/services.php";	
+			String url = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 			List<String> nuggets = patientDAO.getNuggetsPerIncidentId(incidentid);
             SOAPMessage resOverviewSoapMessage = 
             		LogevoCallsEnvelopeFactory.createResOverviewFullRequest(nuggets);

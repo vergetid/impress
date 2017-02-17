@@ -43,7 +43,7 @@ public class NuggetDAOImpl implements NuggetDAO {
             SOAPConnection soapConnection = soapConnectionFactory.createConnection();
 
             // Send SOAP Message to SOAP Server
-            String url = "http://150.146.5.15/webservices/IMPRESS2/services.php";
+            String url = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
             SOAPMessage soapResponse = soapConnection.call(soapMessage, url);	
             //LogevoCallsEnvelopeFactory.printSOAPResponse(soapResponse);
             //Get returned nugget:
@@ -82,7 +82,7 @@ public class NuggetDAOImpl implements NuggetDAO {
         try {
         	SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
 			SOAPConnection soapConnection = soapConnectionFactory.createConnection();
-			String url = "http://150.146.5.15/webservices/IMPRESS2/services.php";	
+			String url = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 			Long millisNow = System.currentTimeMillis();
 			Long patientLastUpdateEpoch = Long.parseLong(patient.getLastUpdateTime());
 			//Long deltaT = (Long.parseLong(TEPTime) 
@@ -129,7 +129,7 @@ public class NuggetDAOImpl implements NuggetDAO {
 				try {
 	        	SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
 				SOAPConnection soapConnection = soapConnectionFactory.createConnection();
-				String url = "http://150.146.5.15/webservices/IMPRESS2/services.php";	
+				String url = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 	            SOAPMessage sickevoSoapMessage = 
 	            		LogevoCallsEnvelopeFactory.createGaugerFullrequest(
 	            				patient.getNugget(), symptomId, symptom.getValue());
@@ -153,7 +153,7 @@ public class NuggetDAOImpl implements NuggetDAO {
 		try {
 	    	SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
 			SOAPConnection soapConnection = soapConnectionFactory.createConnection();
-			String url = "http://150.146.5.15/webservices/IMPRESS2/services.php";	
+			String url = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 	        SOAPMessage sickevoSoapMessage;			
 			sickevoSoapMessage = LogevoCallsEnvelopeFactory.createStatscoringRequest(pps);
 			SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	
@@ -176,7 +176,7 @@ public class NuggetDAOImpl implements NuggetDAO {
 		try {
         	SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
 			SOAPConnection soapConnection = soapConnectionFactory.createConnection();
-			String url = "http://150.146.5.15/webservices/IMPRESS2/services.php";	
+			String url = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
             SOAPMessage sickevoSoapMessage = 
             		LogevoCallsEnvelopeFactory.createExposePPSRequest(nugget);
             SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	

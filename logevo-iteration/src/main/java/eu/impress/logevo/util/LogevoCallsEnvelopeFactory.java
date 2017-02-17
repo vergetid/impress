@@ -28,11 +28,11 @@ public class LogevoCallsEnvelopeFactory {
         SOAPMessage soapMessage = messageFactory.createMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
 
-        String serverURI = "http://150.146.5.15/webservices/IMPRESS2/services.php";
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 
         // SOAP Envelope
         SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration("imp", "http://150.146.5.15/webservices/IMPRESS2/");        
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");
         SOAPBody soapBody = envelope.getBody();	
         
         SOAPElement soapBodyElem = soapBody.addChildElement("resoverreq", "imp");
@@ -65,11 +65,11 @@ public class LogevoCallsEnvelopeFactory {
         SOAPMessage soapMessage = messageFactory.createMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
 
-        String serverURI = "http://150.146.5.15/webservices/IMPRESS2/services.php";
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 
         // SOAP Envelope
         SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration("imp", "http://150.146.5.15/webservices/IMPRESS2/");        
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");
         SOAPBody soapBody = envelope.getBody();	
         
         SOAPElement soapBodyElem = soapBody.addChildElement("sickfullreq", "imp");
@@ -102,11 +102,11 @@ public class LogevoCallsEnvelopeFactory {
         SOAPMessage soapMessage = messageFactory.createMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
 
-        String serverURI = "http://150.146.5.15/webservices/IMPRESS2/services.php";
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 
         // SOAP Envelope
         SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration("imp", "http://150.146.5.15/webservices/IMPRESS2/");        
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");
         SOAPBody soapBody = envelope.getBody();	
         
         SOAPElement soapBodyElem = soapBody.addChildElement("statScoringParameters", "imp");
@@ -176,11 +176,11 @@ public class LogevoCallsEnvelopeFactory {
         SOAPMessage soapMessage = messageFactory.createMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
 
-        String serverURI = "http://150.146.5.15/webservices/IMPRESS2/services.php";
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 
         // SOAP Envelope
         SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration("imp", "http://150.146.5.15/webservices/IMPRESS2/");        
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");
         SOAPBody soapBody = envelope.getBody();	
         
         SOAPElement soapBodyElem = soapBody.addChildElement("expppsreq", "imp");
@@ -209,11 +209,11 @@ public class LogevoCallsEnvelopeFactory {
         SOAPMessage soapMessage = messageFactory.createMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
 
-        String serverURI = "http://150.146.5.15/webservices/IMPRESS2/services.php";
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 
         // SOAP Envelope
         SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration("imp", "http://150.146.5.15/webservices/IMPRESS2/");        
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");
         SOAPBody soapBody = envelope.getBody();	
         
         SOAPElement soapBodyElem = soapBody.addChildElement("gaugfullreq", "imp");
@@ -245,11 +245,11 @@ public class LogevoCallsEnvelopeFactory {
         SOAPMessage soapMessage = messageFactory.createMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
 
-        String serverURI = "http://150.146.5.15/webservices/IMPRESS2/services.php";
+        String serverURI = "http://biomat1.iasi.cnr.it/webservices/IMPRESS/services.php";
 
         // SOAP Envelope
         SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration("imp", "http://150.146.5.15/webservices/IMPRESS2/");        
+        envelope.addNamespaceDeclaration("imp", "http://biomat1.iasi.cnr.it/webservices/IMPRESS/");
         SOAPBody soapBody = envelope.getBody();
         
         SOAPElement soapBodyElem = soapBody.addChildElement("AprioriGenFullParameters", "imp");
