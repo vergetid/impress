@@ -46,7 +46,7 @@ public class Main extends SpringBootServletInitializer {
         factory.setPubSubDomain(true);
         factory.setReplyPubSubDomain(true);
         factory.setSubscriptionDurable(true);        
-        factory.setClientId("intl-89823-test");
+        factory.setClientId("intl-89823");
         return factory;
     }
     @Bean
@@ -56,7 +56,7 @@ public class Main extends SpringBootServletInitializer {
         factory.setPubSubDomain(true);
         factory.setReplyPubSubDomain(true);
         factory.setSubscriptionDurable(true);
-        factory.setClientId("intl-89824-test");
+        factory.setClientId("intl-89824");
         return factory;
     }
 
@@ -79,7 +79,7 @@ public class Main extends SpringBootServletInitializer {
 
     //System.out.println(new String(Files.readAllBytes(file.toPath())));
      // Send a message
-        MessageCreator messageCreator = new MessageCreator() {
+        /*MessageCreator messageCreator = new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 return session.createTextMessage(CAPStr);
@@ -87,7 +87,7 @@ public class Main extends SpringBootServletInitializer {
         };
         JmsTemplate jmsTemplate = ctx.getBean(JmsTemplate.class);
         System.out.println("Sending a new message for durable consumer #2.");
-        jmsTemplate.send("SPRING.TEST", messageCreator);
+        jmsTemplate.send("SPRING.TEST", messageCreator);*/
     
     }
 

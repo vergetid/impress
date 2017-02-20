@@ -2,6 +2,7 @@ package eu.impress.repository.util.incicrowd;
 
 import eu.impress.repository.model.incicrowd.Alert;
 import eu.impress.repository.model.incicrowd.PutObservation;
+import eu.impress.repository.model.incicrowd.SendTextMessage;
 import org.apache.commons.codec.binary.Hex;
 
 import java.nio.ByteBuffer;
@@ -32,6 +33,23 @@ public class CapUpdateBusMessage {
         messageToSend.putLong(crc.getValue());
         return messageToSend;
     }
+
+    public static ByteBuffer pushTextMessage(SendTextMessage text) {
+        ByteBuffer messageToSend = ByteBuffer.allocate(45);
+        messageToSend.order(ByteOrder.LITTLE_ENDIAN);
+        messageToSend.put((byte) 13);
+
+        byte[] stringBytes = text.getOfferNeedID().getBytes();
+        byte[] dataBytes = new byte[18];
+        System.arraycopy(stringBytes, 0, dataBytes,0, Math.min(stringBytes.length, dataBytes.length));
+        messageToSend.put(dataBytes);
+
+        CRC32 crc = new CRC32();
+        crc.update(messageToSend.array(), 0, messageToSend.position());
+        messageToSend.putLong(crc.getValue());
+        return messageToSend;
+    }
+
     public static String revokeAlert(Alert alert) {
         String message = null;
         message = "11";
