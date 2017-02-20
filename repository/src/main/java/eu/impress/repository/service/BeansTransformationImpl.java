@@ -3,7 +3,6 @@ package eu.impress.repository.service;
 import eu.impress.repository.dao.BeansTransformation;
 import eu.impress.repository.model.BedStats;
 
-import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -15,7 +14,12 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import eu.impress.repository.model.incicrowd.PutObservation;
+import net.opengis.gml._3.DirectPositionType;
+import net.opengis.gml._3.PointType;
 import oasis.names.tc.ciq.xnl._3.OrganisationNameType;
+import oasis.names.tc.emergency.edxl.ct._1.EDXLLocationType;
+import oasis.names.tc.emergency.edxl.ct._1.PersonTimePairType;
+import oasis.names.tc.emergency.edxl.gsf._1.EDXLGeoLocationType;
 import oasis.names.tc.emergency.edxl.have._1.Capacity;
 import oasis.names.tc.emergency.edxl.have._1.HospitalBedCapacityStatus;
 import oasis.names.tc.emergency.edxl.have._1.HospitalBedCapacityStatus.BedCapacity;
@@ -24,7 +28,6 @@ import oasis.names.tc.emergency.edxl.have._1.Organization;
 import oasis.names.tc.emergency.edxl.have._1.OrganizationInformation;
 import oasis.names.tc.emergency.edxl.have._1.HospitalStatus.Hospital;
 import oasis.names.tc.emergency.edxl.sitrep._1.FieldObservation;
-import oasis.names.tc.emergency.edxl.sitrep._1.IReport;
 import oasis.names.tc.emergency.edxl.sitrep._1.SitRep;
 import org.springframework.stereotype.Component;
 
@@ -120,15 +123,47 @@ public class BeansTransformationImpl implements BeansTransformation {
             return hospitalStatus;        
     }
 
-	@Override
-	public SitRep ObservationToEDLXL(PutObservation putObservation) {
-		SitRep sitRep = new SitRep();
-		FieldObservation report = new FieldObservation();
-		report.setObservationText(putObservation.getText());
-		sitRep.setReport(report);
+	   @Override
+    public SitRep ObservationToEDLXL(PutObservation putObservation) {
+        SitRep sitRep = new SitRep();
+        sitRep.setMessageID(putObservation.getObservationID());
 
-		return sitRep;
-	}
+        //set time
+        Date date = new Date((long) putObservation.getTime());
+        GregorianCalendar c = new GregorianCalendar();
+        c.setTime(date);
+        XMLGregorianCalendar date2 = null;
+        try {
+             date2 = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+        } catch (DatatypeConfigurationException ex) {
+            Logger.getLogger(BeansTransformationImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        PersonTimePairType timeValue = new PersonTimePairType();
+        timeValue.setTimeValue(date2);
+        sitRep.setPreparedBy(timeValue);
+
+        FieldObservation report = new FieldObservation();
+
+        DirectPositionType pos = new DirectPositionType();
+        pos.getValue().add(putObservation.getLatitude());
+        pos.getValue().add(putObservation.getLongitude());
+
+        PointType point = new PointType();
+        point.setPos(pos);
+
+        EDXLGeoLocationType geolocation = new EDXLGeoLocationType();
+        geolocation.setPoint(point);
+
+        EDXLLocationType observationLocation = new EDXLLocationType();
+        observationLocation.setEDXLGeoLocation(geolocation);
+
+        report.setObservationLocation(observationLocation);
+        report.setObservationText(putObservation.getText());
+        sitRep.setReport(report);
+
+        return sitRep;
+    }
 
 	public static XMLGregorianCalendar getXMLGregorianCalendar() throws DatatypeConfigurationException
     {
