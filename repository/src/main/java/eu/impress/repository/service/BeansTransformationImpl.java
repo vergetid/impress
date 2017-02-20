@@ -17,9 +17,13 @@ import eu.impress.repository.model.incicrowd.PutObservation;
 import net.opengis.gml._3.DirectPositionType;
 import net.opengis.gml._3.PointType;
 import oasis.names.tc.ciq.xnl._3.OrganisationNameType;
+import oasis.names.tc.emergency.edxl.ciq._1_0.xnl.PersonNameType;
+import oasis.names.tc.emergency.edxl.ciq._1_0.xnl.PersonNameType.NameElement;
 import oasis.names.tc.emergency.edxl.ct._1.EDXLLocationType;
+import oasis.names.tc.emergency.edxl.ct._1.PersonDetailsType;
 import oasis.names.tc.emergency.edxl.ct._1.PersonTimePairType;
 import oasis.names.tc.emergency.edxl.gsf._1.EDXLGeoLocationType;
+
 import oasis.names.tc.emergency.edxl.have._1.Capacity;
 import oasis.names.tc.emergency.edxl.have._1.HospitalBedCapacityStatus;
 import oasis.names.tc.emergency.edxl.have._1.HospitalBedCapacityStatus.BedCapacity;
@@ -29,6 +33,7 @@ import oasis.names.tc.emergency.edxl.have._1.OrganizationInformation;
 import oasis.names.tc.emergency.edxl.have._1.HospitalStatus.Hospital;
 import oasis.names.tc.emergency.edxl.sitrep._1.FieldObservation;
 import oasis.names.tc.emergency.edxl.sitrep._1.SitRep;
+import org.apache.jena.sparql.function.library.e;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -141,6 +146,16 @@ public class BeansTransformationImpl implements BeansTransformation {
         
         PersonTimePairType timeValue = new PersonTimePairType();
         timeValue.setTimeValue(date2);
+        
+        
+        PersonNameType personName = new PersonNameType();
+        PersonNameType.NameElement name = new PersonNameType.NameElement();
+        name.setValue("INCICROWD");      
+        personName.getNameElement().add(name);
+        PersonDetailsType personDetails = new PersonDetailsType();
+        personDetails.getPersonName().add(personName);        
+        timeValue.setPersonDetails(personDetails);
+        
         sitRep.setPreparedBy(timeValue);
 
         FieldObservation report = new FieldObservation();
