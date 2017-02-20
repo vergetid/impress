@@ -212,13 +212,14 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
 					+ "			a.OtherIsolation as OtherIsolation, b.OtherIsolation as OtherIsolationbaseline,"
 					+ "			a.OperatingRooms as OperatingRooms, b.OperatingRooms as OperatingRoomsbaseline\n"
 					+ "FROM "
-					+ "	HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate as a,"
+					+ "	HIS_RES_Hospital_Availability_Beds_LastUpdate as a,"
 					+ "	HIS_RES_Hospital_Clinics_Capability as b"
 					+ "	WHERE"
 					+ "	a.HospitalID = b.HospitalID\n"
 					+ "";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
+			System.out.println(sql);
 			if (rs.next()) {
 				List<BedStats> bedStatsList = new ArrayList<BedStats>();
 				String clinics[] = {"AdultICU", "PediatricICU", "NeonatalICU", "EmergencyDepartment",
@@ -285,7 +286,7 @@ public class BedsQueryEngineImpl implements BedsQueryEngineService{
     				+ "			a.OtherIsolation as OtherIsolation, b.OtherIsolation as OtherIsolationbaseline,"
     				+ "			a.OperatingRooms as OperatingRooms, b.OperatingRooms as OperatingRoomsbaseline\n"
     				+ "FROM "
-    				+ "	HIS_RES_Hospital_Clinics_Availability_Beds_LastUpdate as a,"
+    				+ "	HIS_RES_Hospital_Availability_Beds_LastUpdate as a,"
     				+ "	HIS_RES_Hospital_Clinics_Capability as b"
     				+ "	WHERE"
     				+ "	a.HospitalID = b.HospitalID AND\n"
