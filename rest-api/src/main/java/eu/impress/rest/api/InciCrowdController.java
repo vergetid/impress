@@ -1,10 +1,7 @@
 package eu.impress.rest.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.impress.repository.dao.AlertDAO;
-import eu.impress.repository.dao.ObservationDAO;
-import eu.impress.repository.dao.ObservationService;
-import eu.impress.repository.dao.OfferDAO;
+import eu.impress.repository.dao.*;
 import eu.impress.repository.model.incicrowd.*;
 import eu.impress.repository.service.SimulateReceiveMessage;
 import eu.impress.repository.util.incicrowd.CapParsingUtil;
@@ -47,7 +44,11 @@ public class InciCrowdController {
     @Autowired
     OfferDAO offerDAO;
     @Autowired
+    NeedDAO needDAO;
+    @Autowired
     AlertDAO alertDAO;
+    @Autowired
+    TextDAO textDAO;
     @Autowired
     private ApplicationContext ctx;
     @Value("${connections.incimag.emcr.endpoint.message}")
@@ -245,10 +246,25 @@ public class InciCrowdController {
             method= RequestMethod.GET,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> getNeeds() {
+    public ResponseEntity<GetNeedsForRegionResponseBody> getNeeds(@RequestParam String param) {
         RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper objectMapper = new ObjectMapper();
+        GetNeedsForRegionRequestBody getNeedsForRegionRequestBody = null;
+        GetNeedsForRegionResponseBody response = new GetNeedsForRegionResponseBody();
+        try {
+            getNeedsForRegionRequestBody = objectMapper.readValue(param, GetNeedsForRegionRequestBody.class);
+        } catch (IOException e) {
+            e.printStackTrace();
 
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        try {
+            //observationDAO.saveObservation(putObservationRequestBody.getPutObservation());
+            response = needDAO.getNeedList(getNeedsForRegionRequestBody.getGetNeedsForRegion());
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return new ResponseEntity<GetNeedsForRegionResponseBody>(response, HttpStatus.OK);
     }
 
     @RequestMapping(
@@ -256,10 +272,23 @@ public class InciCrowdController {
             method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> sendNeed() {
+    public ResponseEntity<String> sendNeed(@RequestBody String request) {
         RestTemplate restTemplate = new RestTemplate();
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        ObjectMapper objectMapper = new ObjectMapper();
+        PutNeedRequestBody putNeedRequestBody = null;
+        try {
+            putNeedRequestBody = objectMapper.readValue(request, PutNeedRequestBody.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<String>(PutNeedError.PUT_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        try {
+            needDAO.saveNeed(putNeedRequestBody.getPutNeed());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ResponseEntity<String>(PutNeedError.PUT_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<String>(PutNeedSuccess.PUT_SUCCESS, HttpStatus.OK);
     }
 
     @RequestMapping(
@@ -278,10 +307,25 @@ public class InciCrowdController {
             method= RequestMethod.GET,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> getTextMessages() {
+    public ResponseEntity<GetTextsResponseBody> getTextMessages(@RequestParam String param) {
         RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper objectMapper = new ObjectMapper();
+        GetTextsRequestBody getTextsRequestBody = null;
+        GetTextsResponseBody response = new GetTextsResponseBody();
+        try {
+            getTextsRequestBody = objectMapper.readValue(param, GetTextsRequestBody.class);
+        } catch (IOException e) {
+            e.printStackTrace();
 
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        try {
+            //observationDAO.saveObservation(putObservationRequestBody.getPutObservation());
+            response = textDAO.getTexts(getTextsRequestBody.getGetTextMessages());
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return new ResponseEntity<GetTextsResponseBody>(response, HttpStatus.OK);
     }
 
 
@@ -290,10 +334,27 @@ public class InciCrowdController {
             method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> sendTextMessage() {
+    public ResponseEntity<String> sendTextMessage(@RequestBody String request) {
         RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper objectMapper = new ObjectMapper();
+        SendTextRequestBody putTextRequestBody = null;
+        try {
+            putTextRequestBody = objectMapper.readValue(request, SendTextRequestBody.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<String>(SendTextError.PUT_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        try {
+            textDAO.saveText(putTextRequestBody.getPutText());
 
-        return new ResponseEntity<Void>(HttpStatus.OK);
+            //forward to activemq
+            publishToTopic("IMPRESS/InciCrowd/TextMessaging",
+                    CapUpdateBusMessage.pushTextMessage(putTextRequestBody.getPutText()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ResponseEntity<String>(SendTextError.PUT_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<String>(SendTextSuccess.PUT_SUCCESS, HttpStatus.OK);
     }
 
     private void publishToTopic(String topicName, ByteBuffer msg)
