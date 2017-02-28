@@ -3,6 +3,8 @@ package eu.impress.repository.service;
 import eu.impress.repository.dao.AlertDAO;
 import eu.impress.repository.model.incicrowd.Alert;
 import eu.impress.repository.model.incicrowd.GetAlertResponseBody;
+import eu.impress.util.Point;
+import eu.impress.util.Util;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -38,7 +40,9 @@ public class AlertDAOImpl implements AlertDAO{
                 + "sender = ?, "
                 + "headline=?,"
                 + "description = ?," +
-                "area = ?";
+                "area = ?," +
+                "centroid_lat = ?," +
+                "centroid_long = ?";
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -48,10 +52,14 @@ public class AlertDAOImpl implements AlertDAO{
             ps.setString(4, alert.getHeadline());
             ps.setString(5, alert.getDescription());
             ps.setString(6, alert.getArea());
+            Point centroid = Util.caclulateCentroidFromPolygonString(alert.getArea());
+            ps.setDouble(7, centroid.getX());
+            ps.setDouble(8, centroid.getY());
             ps.executeUpdate();
             ps.close();
 
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
 
         } finally {

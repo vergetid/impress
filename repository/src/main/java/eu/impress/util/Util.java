@@ -55,4 +55,33 @@ public class Util {
         }
         return result;   	
     }
+    public static Point caclulateCentroidFromPolygonString(String polygon) {
+    	polygon = polygon.replace("<polygon>", "").replace("</polygon>", "");
+    	//System.out.println("CALCULATE CENTORID: " + polygon);
+    	String pointsStr[] = polygon.split(" ");
+    	List<Point> points = new ArrayList<>();
+    	for (int i = 0; i < pointsStr.length; i++) {
+			Point point = new Point();
+			point.setX(Double.parseDouble(pointsStr[i].split(",")[0]));
+			point.setY(Double.parseDouble(pointsStr[i].split(",")[1]));
+			points.add(point);
+		}
+
+		Double x = 0.;
+		Double y = 0.;
+		Integer pointCount = points.size();
+		for (int i = 0;i < pointCount - 1;i++){
+			Point point = points.get(i);
+			x += point.getX();
+			y += point.getY();
+		}
+
+		x = x/pointCount;
+		y = y/pointCount;
+
+		Point point = new Point();
+		point.setX(x);
+		point.setY(y);
+		return point;
+	}
 }

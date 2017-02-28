@@ -35,6 +35,8 @@ import javax.xml.soap.SOAPException;
 import eu.impress.repository.model.incicrowd.Alert;
 import eu.impress.repository.util.incicrowd.CapParsingUtil;
 import eu.impress.repository.util.incicrowd.CapUpdateBusMessage;
+import eu.impress.util.Point;
+import eu.impress.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -58,7 +60,8 @@ public class ReceiverImpl {
 	AlertDAO alertDAO;
 	@Autowired
 	private ApplicationContext ctx;
-	@JmsListener(destination = "IMPRESS.InciCrowd.Alers", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
+	@JmsListener(destination = "IMPRESS.IncidentMgmt.CAPAlerts", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
+	//@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
 	public void receivCAP(String message) {
 		String alertID;
 		String headline;
@@ -80,8 +83,11 @@ public class ReceiverImpl {
 		Alert alert = new Alert(alertID, timeNow, sender, headline, description, area);
 		try {
 			alertDAO.storeAlert(alert);
+			Point centroid = Util.caclulateCentroidFromPolygonString(alert.getArea());
+			alert.setCentroid_lat(centroid.getX());
+			alert.setCentroid_long(centroid.getY());
 			CapUpdateBusMessage.pushAlert(alert);
-			publishToTopic("IMPRESS.InciCrowd.Alerts", CapUpdateBusMessage.pushAlert(alert));
+			publishToTopic("IMPRESS/InciCrowd/Alerts", CapUpdateBusMessage.pushAlert(alert));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -176,7 +182,7 @@ public class ReceiverImpl {
 		//}
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
-	//@JmsListener(destination = "IMPRESS/InciCrowd/Alerts", containerFactory = "alertJmsContainerFactory", subscription = "intl-89814-test")
+	@JmsListener(destination = "IMPRESS/InciCrowd/Location", containerFactory = "alertJmsContainerFactory", subscription = "intl-89814-test")
 	public void receiveLocationUpdate(String message) {
 		System.out.println("Received location update: ");
 		System.out.println(message);

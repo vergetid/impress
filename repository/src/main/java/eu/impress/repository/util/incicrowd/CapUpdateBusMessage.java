@@ -14,18 +14,18 @@ import java.util.zip.CRC32;
  */
 public class CapUpdateBusMessage {
     public static ByteBuffer pushAlert(Alert alert) {
-        ByteBuffer messageToSend = ByteBuffer.allocate(39);
+        ByteBuffer messageToSend = ByteBuffer.allocate(121);
         messageToSend.order(ByteOrder.LITTLE_ENDIAN);
         messageToSend.put((byte) 10);
 
         byte[] stringBytes = alert.getAlertID().getBytes();
-        byte[] dataBytes = new byte[18];
+        byte[] dataBytes = new byte[100];
         System.arraycopy(stringBytes, 0, dataBytes,0, Math.min(stringBytes.length, dataBytes.length));
         messageToSend.put(dataBytes);
 
-        messageToSend.putInt(235322);
-        messageToSend.putInt(543212);
-        messageToSend.putInt(345432);
+        messageToSend.putInt( new Double((60.0*alert.getCentroid_lat())).intValue() );
+        messageToSend.putInt( new Double((60.0*alert.getCentroid_long())).intValue());
+        messageToSend.putInt(6371000);
 
 
         CRC32 crc = new CRC32();

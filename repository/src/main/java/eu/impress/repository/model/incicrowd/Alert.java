@@ -14,6 +14,8 @@ public class Alert implements Serializable {
     String description;
     //TODO: check the time for area. String in response string but internal representation may be list of points
     String area;
+    Double centroid_lat;
+    Double centroid_long;
 
     public Alert(String alertID, Long time, String sender, String headline, String description, String area) {
         this.response = response;
@@ -23,6 +25,22 @@ public class Alert implements Serializable {
         this.headline = headline;
         this.description = description;
         this.area = area;
+    }
+
+    public Double getCentroid_lat() {
+        return centroid_lat;
+    }
+
+    public void setCentroid_lat(Double centroid_lat) {
+        this.centroid_lat = centroid_lat;
+    }
+
+    public Double getCentroid_long() {
+        return centroid_long;
+    }
+
+    public void setCentroid_long(Double centroid_long) {
+        this.centroid_long = centroid_long;
     }
 
     public String getResponse() {
