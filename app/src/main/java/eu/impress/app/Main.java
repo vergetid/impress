@@ -63,21 +63,10 @@ public class Main extends SpringBootServletInitializer {
     public static void main(String... args) throws IOException{
         FileSystemUtils.deleteRecursively(new File("activemq-data"));
     ApplicationContext ctx = SpringApplication.run(Main.class, args);
-    File capFile = new File("/home/jim/CAP.xml");
+    File capFile = new File("/home/ubuntu/cap.txt");
     //File capFile = new File("/home/vergetid/workspace/INTRA/impress tools/CAP.xml");
     String CAPStr = new String(Files.readAllBytes(capFile.toPath()));
-    //SimulateReceiveMessage simulateReceiveMessage = new SimulateReceiveMessage();
-     //   simulateReceiveMessage.receivCAP(CAPStr);
-    //Development only
-    //get the contents of the TEP file
-    /*System.out.println("Tep file location: " + tepFileName);
-    File file = new File("/home/jim/TEPmessageReceived-new.msg");
-    String tepMsgStr = new String(Files.readAllBytes(file.toPath()));*/
-    
-//SimulateReceiveMessage simulateReceiveMessage = new SimulateReceiveMessage();
-//simulateReceiveMessage.receiveMessage(tepMsgStr);
 
-    //System.out.println(new String(Files.readAllBytes(file.toPath())));
      // Send a message
         MessageCreator messageCreator = new MessageCreator() {
             @Override

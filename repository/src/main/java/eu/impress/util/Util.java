@@ -84,4 +84,19 @@ public class Util {
 		point.setY(y);
 		return point;
 	}
+
+	public static Point calculateCentroidFromCircleString(String circle) {
+		circle = circle.replace("<circle>", "").replace("</circle>", "");
+		//System.out.println("CALCULATE CENTORID: " + polygon);
+		String pointsStr[] = circle.split(" ");
+		//List<Point> points = new ArrayList<>();
+		//for (int i = 0; i < pointsStr.length; i++) {
+			Point point = new Point();
+			point.setX(Double.parseDouble(pointsStr[0].split(",")[0]));
+			point.setY(Double.parseDouble(pointsStr[0].split(",")[1]));
+			//points.add(point);
+		return point;
+		//}
+
+	}
 }

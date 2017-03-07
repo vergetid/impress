@@ -52,7 +52,7 @@ public class AlertDAOImpl implements AlertDAO{
             ps.setString(4, alert.getHeadline());
             ps.setString(5, alert.getDescription());
             ps.setString(6, alert.getArea());
-            Point centroid = Util.caclulateCentroidFromPolygonString(alert.getArea());
+            Point centroid = Util.calculateCentroidFromCircleString(alert.getArea());
             ps.setDouble(7, centroid.getX());
             ps.setDouble(8, centroid.getY());
             ps.executeUpdate();

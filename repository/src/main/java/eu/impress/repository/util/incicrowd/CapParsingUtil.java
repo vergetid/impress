@@ -38,12 +38,12 @@ public class CapParsingUtil {
     }
     public static String getSender(String capMesg) throws ParserConfigurationException, SAXException, IOException {
         Document doc = createXmlDocument(capMesg);
-        NodeList nList = doc.getElementsByTagName("info");
+        NodeList nList = doc.getElementsByTagName("sender");
         Node nNode = nList.item(0);
         Element eElement = (Element) nNode;
-        System.out.println("CAP Alert Sender: " + eElement.getElementsByTagName("senderName").item(0).getTextContent());
+        System.out.println("CAP Alert Sender: " + nNode.getTextContent());
 
-        return eElement.getElementsByTagName("senderName").item(0).getTextContent();
+        return nNode.getTextContent();
     }
     public static String getDescription(String capMesg) throws ParserConfigurationException, SAXException, IOException {
         Document doc = createXmlDocument(capMesg);
@@ -59,11 +59,16 @@ public class CapParsingUtil {
         NodeList nList = doc.getElementsByTagName("info");
         Node nNode = nList.item(0);
         NodeList areaAnodeList = ((Element) nNode).getElementsByTagName("area");
-        Node areaNode = areaAnodeList.item(0);
-        Element pElement = (Element) areaNode;
-        System.out.println("CAP Alert area: " + pElement.getElementsByTagName("polygon").item(0).getTextContent());
-
-        return "<polygon>" + pElement.getElementsByTagName("polygon").item(0).getTextContent() + "</polygon>";
+        for (int i = 0; i < areaAnodeList.getLength(); i++) {
+            Node areaNode = areaAnodeList.item(i);
+            if (((Element) areaNode).getElementsByTagName("areaDesc").item(0).getTextContent().contains("Incident Location")) {
+                System.out.println("GET AREA: found location element");
+                Element pElement = (Element) areaNode;
+                System.out.println("CAP Alert area: " + pElement.getElementsByTagName("circle").item(0).getTextContent());
+                return "<circle>" + pElement.getElementsByTagName("circle").item(0).getTextContent() + "</circle>";
+            }
+        }
+        return null;
     }
     private static Document createXmlDocument(String xmlSource) throws ParserConfigurationException, UnsupportedEncodingException, SAXException, IOException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

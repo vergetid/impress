@@ -144,7 +144,7 @@ public class InciCrowdController {
 
 
             //forward to activemq
-            publishToTopic("IMPRESS/InciCrowd/Observation", CapUpdateBusMessage.pushObservation(putObservationRequestBody.getPutObservation()));
+            publishToTopic("IMPRESS.InciCrowd.Observation", CapUpdateBusMessage.pushObservation(putObservationRequestBody.getPutObservation()));
         } catch (SQLException e) {
             e.printStackTrace();
 
@@ -185,7 +185,7 @@ public class InciCrowdController {
             method= RequestMethod.GET,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<GetOffersForRegionResponseBody> getOffers(@RequestParam String param) {
+    public ResponseEntity<OffersResponseEnvelope> getOffers(@RequestParam String param) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
         GetOffersForRegionRequestBody getOffersForRegionRequestBody = null;
@@ -203,7 +203,9 @@ public class InciCrowdController {
             e.printStackTrace();
 
         }
-        return new ResponseEntity<GetOffersForRegionResponseBody>(response, HttpStatus.OK);
+        OffersResponseEnvelope offersResponseEnvelope = new OffersResponseEnvelope();
+        offersResponseEnvelope.setGetOffersForRegionResponseBody(response);
+        return new ResponseEntity<>(offersResponseEnvelope, HttpStatus.OK);
     }
 
     @RequestMapping(

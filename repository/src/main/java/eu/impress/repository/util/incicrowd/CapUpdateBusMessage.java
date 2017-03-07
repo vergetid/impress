@@ -23,9 +23,9 @@ public class CapUpdateBusMessage {
         System.arraycopy(stringBytes, 0, dataBytes,0, Math.min(stringBytes.length, dataBytes.length));
         messageToSend.put(dataBytes);
 
-        messageToSend.putInt( new Double((60.0*alert.getCentroid_lat())).intValue() );
-        messageToSend.putInt( new Double((60.0*alert.getCentroid_long())).intValue());
-        messageToSend.putInt(6371000);
+        messageToSend.putInt( new Double((60.0*10000.0*alert.getCentroid_lat())).intValue() );
+        messageToSend.putInt( new Double((60.0*10000.0*alert.getCentroid_long())).intValue());
+        messageToSend.putInt(1000);
 
 
         CRC32 crc = new CRC32();
