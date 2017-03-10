@@ -37,20 +37,7 @@ import eu.impress.repository.service.SimulateReceiveMessage;
 @EnableJms
 @EnableAsync
 public class Main extends SpringBootServletInitializer {
-    //@Autowired
-    //SimulateReceiveMessage simulateReceiveMessage;
-	//Development only
-	/*private @Value("${tepfiles.location}") static String tepFileName;*/
-    @Bean
-    JmsListenerContainerFactory<?> myJmsContainerFactory(ConnectionFactory connectionFactory) {
-        SimpleJmsListenerContainerFactory factory = new SimpleJmsListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
-        factory.setPubSubDomain(true);
-        factory.setReplyPubSubDomain(true);
-        factory.setSubscriptionDurable(true);        
-        factory.setClientId("intl-89823");
-        return factory;
-    }
+
     @Bean
     JmsListenerContainerFactory<?> alertJmsContainerFactory(ConnectionFactory connectionFactory) {
         SimpleJmsListenerContainerFactory factory = new SimpleJmsListenerContainerFactory();
@@ -75,21 +62,7 @@ public class Main extends SpringBootServletInitializer {
 
     public static void main(String... args) throws IOException{
         FileSystemUtils.deleteRecursively(new File("activemq-data"));
-    ApplicationContext ctx = SpringApplication.run(Main.class, args);
-    File capFile = new File("/home/jim/Desktop/cap.txt");
-    //File capFile = new File("/home/vergetid/workspace/INTRA/impress tools/CAP.xml");
-    String CAPStr = new String(Files.readAllBytes(capFile.toPath()));
-
-     // Send a message
-        /*MessageCreator messageCreator = new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                return session.createTextMessage(CAPStr);
-            }
-        };
-        JmsTemplate jmsTemplate = ctx.getBean(JmsTemplate.class);
-        System.out.println("Sending a new message for durable consumer #2.");
-        jmsTemplate.send("SPRING.TEST", messageCreator);*/
+        ApplicationContext ctx = SpringApplication.run(Main.class, args);
     
     }
 
