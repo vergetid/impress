@@ -18,7 +18,8 @@ import java.io.UnsupportedEncodingException;
  * Created by jim on 24/1/2017.
  */
 public class CapParsingUtil {
-    public static String getIncidentId(String capMesg) throws ParserConfigurationException, SAXException, IOException {
+    public static String getIncidentId(String capEnvMesg) throws ParserConfigurationException, SAXException, IOException {
+        String capMesg = decapsulateCAP(capEnvMesg);
         Document doc = createXmlDocument(capMesg);
         NodeList nList = doc.getElementsByTagName("identifier");
 
@@ -27,7 +28,8 @@ public class CapParsingUtil {
         return nList.item(0).getTextContent();
         //return "3";
     }
-    public static String getHeader(String capMesg) throws ParserConfigurationException, SAXException, IOException {
+    public static String getHeader(String capEnvMesg) throws ParserConfigurationException, SAXException, IOException {
+        String capMesg = decapsulateCAP(capEnvMesg);
         Document doc = createXmlDocument(capMesg);
         NodeList nList = doc.getElementsByTagName("info");
         Node nNode = nList.item(0);
@@ -36,7 +38,8 @@ public class CapParsingUtil {
 
         return eElement.getElementsByTagName("headline").item(0).getTextContent();
     }
-    public static String getSender(String capMesg) throws ParserConfigurationException, SAXException, IOException {
+    public static String getSender(String capEnvMesg) throws ParserConfigurationException, SAXException, IOException {
+        String capMesg = decapsulateCAP(capEnvMesg);
         Document doc = createXmlDocument(capMesg);
         NodeList nList = doc.getElementsByTagName("sender");
         Node nNode = nList.item(0);
@@ -45,7 +48,8 @@ public class CapParsingUtil {
 
         return nNode.getTextContent();
     }
-    public static String getDescription(String capMesg) throws ParserConfigurationException, SAXException, IOException {
+    public static String getDescription(String capEnvMesg) throws ParserConfigurationException, SAXException, IOException {
+        String capMesg = decapsulateCAP(capEnvMesg);
         Document doc = createXmlDocument(capMesg);
         NodeList nList = doc.getElementsByTagName("info");
         Node nNode = nList.item(0);
@@ -54,7 +58,8 @@ public class CapParsingUtil {
 
         return eElement.getElementsByTagName("description").item(0).getTextContent();
     }
-    public static String getArea(String capMesg) throws ParserConfigurationException, SAXException, IOException {
+    public static String getArea(String capEnvMesg) throws ParserConfigurationException, SAXException, IOException {
+        String capMesg = decapsulateCAP(capEnvMesg);
         Document doc = createXmlDocument(capMesg);
         NodeList nList = doc.getElementsByTagName("info");
         Node nNode = nList.item(0);
@@ -80,5 +85,13 @@ public class CapParsingUtil {
 
         doc.getDocumentElement().normalize();
         return doc;
+    }
+
+    public static String decapsulateCAP(String CAPEnvelopeStr) throws ParserConfigurationException, UnsupportedEncodingException, SAXException, IOException {
+        Document doc = createXmlDocument(CAPEnvelopeStr);
+
+        NodeList nList = doc.getElementsByTagName("any");
+        Node nNode = nList.item(0);
+        return nNode.getTextContent();
     }
 }

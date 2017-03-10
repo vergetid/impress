@@ -1,9 +1,11 @@
 package eu.impress.repository.model.incicrowd;
 
+import java.io.Serializable;
+
 /**
  * Created by jim on 24/1/2017.
  */
-public class GetAlert {
+public class GetAlert implements Serializable{
     String alertID;
     String locale;
 

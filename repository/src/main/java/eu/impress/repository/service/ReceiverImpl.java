@@ -6,6 +6,7 @@ import eu.impress.logevo.model.GaugerSymptom;
 import eu.impress.logevo.model.Patient;
 import eu.impress.logevo.util.Asset;
 import eu.impress.logevo.util.LogevoCallsEnvelopeFactory;
+import eu.impress.logevo.util.PatevoCall;
 import eu.impress.logevo.util.TepParsingUtil;
 import eu.impress.repository.dao.AlertDAO;
 import eu.impress.repository.dao.Receiver;
@@ -54,14 +55,16 @@ public class ReceiverImpl {
 	PatientDAO patientDAO;
 	@Autowired
 	NuggetDAO nuggetDAO;
+	@Autowired
+	PatevoCall patevoCall;
 	//@Autowired
 	//ConfigurableApplicationContext context;
 	@Autowired
 	AlertDAO alertDAO;
 	@Autowired
 	private ApplicationContext ctx;
-	//@JmsListener(destination = "IMPRESS.IncidentMgmt.CAPAlerts", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
-	@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
+	@JmsListener(destination = "IMPRESS.IncidentMgmt.CAPAlerts", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
+	//@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
 	public void receivCAP(String message) {
 		String alertID;
 		String headline;
@@ -99,7 +102,8 @@ public class ReceiverImpl {
 	 //@JmsListener(destination = "IMPRESS.IncidentMgmt.Messages", containerFactory = "myJmsContainerFactory", subscription = "intl-89890-55")
 	//@JmsListener(destination = "SPRING.TEST", containerFactory = "myJmsContainerFactory", subscription = "intl-89890")
 	public void receiveMessage(String message) {
-		System.out.println("Received <" + message + ">");
+		patevoCall.patevoLoop(message);
+		/*System.out.println("Received <" + message + ">");
 		//Prepare an xml document to parse the TEP Message
 
 			
@@ -168,7 +172,7 @@ public class ReceiverImpl {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}*/
-		System.out.println("DEBUG: eventId: " + eventId);
+		//System.out.println("DEBUG: eventId: " + eventId);
 		// Save the contents of the message to a file
 		//File file = new File(getClass().getClassLoader().getResource(".").getFile()
 		//		+ "/TEPmessageReceived_" + new Date().getTime() + ".msg");
@@ -182,7 +186,7 @@ public class ReceiverImpl {
 		//}
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
-	//@JmsListener(destination = "IMPRESS/InciCrowd/Location", containerFactory = "alertJmsContainerFactory", subscription = "intl-89814")
+	@JmsListener(destination = "IMPRESS/InciCrowd/Location", containerFactory = "locationJmsContainerFactory", subscription = "intl-89814")
 	public void receiveLocationUpdate(String message) {
 		System.out.println("Received location update: ");
 		System.out.println(message);

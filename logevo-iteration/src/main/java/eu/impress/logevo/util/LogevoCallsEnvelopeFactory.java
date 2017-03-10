@@ -48,13 +48,13 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        try {
+        /*try {
         	System.out.println("LogevoCallsEnvelopeFactory.createResOverviewFullRequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
         
         return soapMessage;
 		
@@ -85,14 +85,14 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        try {
+        /*try {
         	System.out.println("LogevoCallsEnvelopeFactory.createSickevoFullRequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
+        */
         return soapMessage;
 		
 	}
@@ -160,13 +160,13 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        try {
+        /*try {
         	System.out.println("LogevoCallsEnvelopeFactory.createStatscoringRequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
         
         return soapMessage;
 		
@@ -192,13 +192,13 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        try {
+        /*try {
         	System.out.println("LogevoCallsEnvelopeFactory.createExposePPSrequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
         
         return soapMessage;
 		
@@ -229,13 +229,13 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        try {
+        /*try {
         	System.out.println("LogevoCallsEnvelopeFactory.createGaugerFullrequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
         
         return soapMessage;
 		
@@ -265,13 +265,13 @@ public class LogevoCallsEnvelopeFactory {
 
         soapMessage.saveChanges();
         
-        try {
+        /*try {
         	System.out.println("LogevoCallsEnvelopeFactory.createAprioriGenfullRequest:\n");
         	soapMessage.writeTo(System.out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 
 		return soapMessage;
 	}

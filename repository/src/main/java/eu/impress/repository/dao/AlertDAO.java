@@ -2,6 +2,8 @@ package eu.impress.repository.dao;
 
 import eu.impress.repository.model.incicrowd.Alert;
 import eu.impress.repository.model.incicrowd.GetAlertResponseBody;
+import eu.impress.repository.model.incicrowd.GetAlertsForRegion;
+import eu.impress.repository.model.incicrowd.GetAlertsForRegionResponseBody;
 
 import java.sql.SQLException;
 
@@ -11,4 +13,5 @@ import java.sql.SQLException;
 public interface AlertDAO {
     public void storeAlert(Alert alert) throws SQLException;
     public GetAlertResponseBody getAlert(String alertID)  throws SQLException;
+    GetAlertsForRegionResponseBody getAlertsForRegion(GetAlertsForRegion getAlertsForRegion) throws SQLException;
 }

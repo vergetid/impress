@@ -22,6 +22,7 @@ import javax.jms.Message;
 import javax.jms.Session;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.util.FileSystemUtils;
 
 import eu.impress.repository.service.SimulateReceiveMessage;
@@ -34,6 +35,7 @@ import eu.impress.repository.service.SimulateReceiveMessage;
 //@ComponentScan
 @SpringBootApplication
 @EnableJms
+@EnableAsync
 public class Main extends SpringBootServletInitializer {
     //@Autowired
     //SimulateReceiveMessage simulateReceiveMessage;
@@ -60,15 +62,26 @@ public class Main extends SpringBootServletInitializer {
         return factory;
     }
 
+    @Bean
+    JmsListenerContainerFactory<?> locationJmsContainerFactory(ConnectionFactory connectionFactory) {
+        SimpleJmsListenerContainerFactory factory = new SimpleJmsListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setPubSubDomain(true);
+        factory.setReplyPubSubDomain(true);
+        factory.setSubscriptionDurable(true);
+        factory.setClientId("intl-89814");
+        return factory;
+    }
+
     public static void main(String... args) throws IOException{
         FileSystemUtils.deleteRecursively(new File("activemq-data"));
     ApplicationContext ctx = SpringApplication.run(Main.class, args);
-    File capFile = new File("/home/ubuntu/cap.txt");
+    File capFile = new File("/home/jim/Desktop/cap.txt");
     //File capFile = new File("/home/vergetid/workspace/INTRA/impress tools/CAP.xml");
     String CAPStr = new String(Files.readAllBytes(capFile.toPath()));
 
      // Send a message
-        MessageCreator messageCreator = new MessageCreator() {
+        /*MessageCreator messageCreator = new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 return session.createTextMessage(CAPStr);
@@ -76,7 +89,7 @@ public class Main extends SpringBootServletInitializer {
         };
         JmsTemplate jmsTemplate = ctx.getBean(JmsTemplate.class);
         System.out.println("Sending a new message for durable consumer #2.");
-        jmsTemplate.send("SPRING.TEST", messageCreator);
+        jmsTemplate.send("SPRING.TEST", messageCreator);*/
     
     }
 

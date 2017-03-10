@@ -1,12 +1,13 @@
 package eu.impress.repository.model.incicrowd;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 /**
  * Created by jim on 4/12/2016.
  */
 public class Alert implements Serializable {
-    String response;
     String alertID;
     Long time;
     String sender;
@@ -14,11 +15,12 @@ public class Alert implements Serializable {
     String description;
     //TODO: check the time for area. String in response string but internal representation may be list of points
     String area;
+    @JsonIgnore
     Double centroid_lat;
+    @JsonIgnore
     Double centroid_long;
 
     public Alert(String alertID, Long time, String sender, String headline, String description, String area) {
-        this.response = response;
         this.alertID = alertID;
         this.time = time;
         this.sender = sender;
@@ -41,14 +43,6 @@ public class Alert implements Serializable {
 
     public void setCentroid_long(Double centroid_long) {
         this.centroid_long = centroid_long;
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
     }
 
     public String getAlertID() {

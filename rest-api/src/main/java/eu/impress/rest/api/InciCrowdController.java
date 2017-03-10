@@ -57,11 +57,11 @@ public class InciCrowdController {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(eu.impress.rest.api.InciCrowdController.class);
 
     @RequestMapping(
-            value="/getAlertDetails",
-            method= RequestMethod.GET,
+            value="/getAlert",
+            method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<GetAlertResponseBody> getAlertDetails(@RequestParam String param) {
+    public ResponseEntity<AlertResponseEnvelope> getAlertDetails(@RequestBody String param) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
         GetAlertRequestBody getAlertRequestBody = null;
@@ -76,27 +76,61 @@ public class InciCrowdController {
             //observationDAO.saveObservation(putObservationRequestBody.getPutObservation());
             response = alertDAO.getAlert(getAlertRequestBody.getGetAlert().getAlertID());
             if (response == null) {
-                return new ResponseEntity<GetAlertResponseBody>(HttpStatus.NOT_FOUND);
+                response = new GetAlertResponseBody();
+                response.setResponse("NOTFOUND");
+                AlertResponseEnvelope alertResponseEnvelope = new AlertResponseEnvelope();
+                alertResponseEnvelope.setGetAlertResponseBody(response);
+                return new ResponseEntity<>(alertResponseEnvelope, HttpStatus.OK);
             } else {
-                response.setResponse("SUCCESS");
-                return new ResponseEntity<GetAlertResponseBody>(response, HttpStatus.OK);
+                AlertResponseEnvelope alertResponseEnvelope = new AlertResponseEnvelope();
+                alertResponseEnvelope.setGetAlertResponseBody(response);
+                return new ResponseEntity<>(alertResponseEnvelope, HttpStatus.OK);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            response = new GetAlertResponseBody();
+            response.setResponse("ERROR");
+            AlertResponseEnvelope alertResponseEnvelope = new AlertResponseEnvelope();
+            alertResponseEnvelope.setGetAlertResponseBody(response);
+            return new ResponseEntity<>(alertResponseEnvelope, HttpStatus.OK);
 
         }
-        return new ResponseEntity<GetAlertResponseBody>(response, HttpStatus.OK);
     }
 
     @RequestMapping(
-            value="/getAlertForRegion",
-            method= RequestMethod.GET,
+            value="/getAlertsForRegion",
+            method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> getAlertForRegion() {
+    public ResponseEntity<AlertsForRegionResponseEnvelope> getAlertForRegion(@RequestBody String param) {
         RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper objectMapper = new ObjectMapper();
+        GetAlertsForRegionRequestBody getAlertsForRegionRequestBody = null;
+        GetAlertsForRegionResponseBody response = new GetAlertsForRegionResponseBody();
+        try {
+            getAlertsForRegionRequestBody = objectMapper.readValue(param, GetAlertsForRegionRequestBody.class);
+        } catch (IOException e) {
+            e.printStackTrace();
 
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        try {
+            //observationDAO.saveObservation(putObservationRequestBody.getPutObservation());
+            response = alertDAO.getAlertsForRegion(getAlertsForRegionRequestBody.getGetAlertsForRegion());
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GetAlertsForRegionResponseBody();
+            response.setResponse("ERROR");
+            AlertsForRegionResponseEnvelope alertsForRegionResponseEnvelope = new AlertsForRegionResponseEnvelope();
+            alertsForRegionResponseEnvelope.setGetAlertsForRegionResponseBody(response);
+            return new ResponseEntity<>(alertsForRegionResponseEnvelope, HttpStatus.OK);
+
+        }
+        AlertsForRegionResponseEnvelope alertsForRegionResponseEnvelope = new AlertsForRegionResponseEnvelope();
+        if (response.getAlerts().size() == 0) {
+            response.setResponse("NONE");
+        }
+        alertsForRegionResponseEnvelope.setGetAlertsForRegionResponseBody(response);
+        return new ResponseEntity<>(alertsForRegionResponseEnvelope, HttpStatus.OK);
     }
 
     @RequestMapping(
@@ -157,35 +191,35 @@ public class InciCrowdController {
 
     @RequestMapping(
             value="/deleteObservation",
-            method= RequestMethod.DELETE,
+            method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> deleteObservation(@RequestBody String request) {
+    public ResponseEntity<String> deleteObservation(@RequestBody String request) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
         DeleteObservationRequestBody deleteObservationRequestBody = null;
         try {
             deleteObservationRequestBody = objectMapper.readValue(request, DeleteObservationRequestBody.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new ResponseEntity<String>(DeleteObservationResponses.PUT_ERROR, HttpStatus.OK);
         }
         try {
             observationDAO.deleteObservation(deleteObservationRequestBody.getDeleteObservation().getObservationID());
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new ResponseEntity<String>(DeleteObservationResponses.PUT_ERROR, HttpStatus.OK);
         }
 
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return new ResponseEntity<String>(DeleteObservationResponses.PUT_SUCCESS, HttpStatus.OK);
     }
 
     @RequestMapping(
             value="/getOffers",
-            method= RequestMethod.GET,
+            method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<OffersResponseEnvelope> getOffers(@RequestParam String param) {
+    public ResponseEntity<OffersResponseEnvelope> getOffers(@RequestBody String param) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
         GetOffersForRegionRequestBody getOffersForRegionRequestBody = null;
@@ -201,9 +235,17 @@ public class InciCrowdController {
             response = offerDAO.getOfferList(getOffersForRegionRequestBody.getGetOffersForRegion());
         } catch (SQLException e) {
             e.printStackTrace();
+            response = new GetOffersForRegionResponseBody();
+            response.setResponse("ERROR");
+            OffersResponseEnvelope offersResponseEnvelope = new OffersResponseEnvelope();
+            offersResponseEnvelope.setGetOffersForRegionResponseBody(response);
+            return new ResponseEntity<>(offersResponseEnvelope, HttpStatus.OK);
 
         }
         OffersResponseEnvelope offersResponseEnvelope = new OffersResponseEnvelope();
+        if (response.getOffers().size() == 0) {
+            response.setResponse("NONE");
+        }
         offersResponseEnvelope.setGetOffersForRegionResponseBody(response);
         return new ResponseEntity<>(offersResponseEnvelope, HttpStatus.OK);
     }
@@ -234,7 +276,7 @@ public class InciCrowdController {
 
     @RequestMapping(
             value="/deleteOffer",
-            method= RequestMethod.DELETE,
+            method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Void> deleteOffer() {
@@ -245,10 +287,10 @@ public class InciCrowdController {
 
     @RequestMapping(
             value="/getNeeds",
-            method= RequestMethod.GET,
+            method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<NeedsResponseEnvelope> getNeeds(@RequestParam String param) {
+    public ResponseEntity<NeedsResponseEnvelope> getNeeds(@RequestBody String param) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
         GetNeedsForRegionRequestBody getNeedsForRegionRequestBody = null;
@@ -297,7 +339,7 @@ public class InciCrowdController {
 
     @RequestMapping(
             value="/deleteNeed",
-            method= RequestMethod.DELETE,
+            method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Void> deleteNeed() {
@@ -308,10 +350,10 @@ public class InciCrowdController {
 
     @RequestMapping(
             value="/getTextMessages",
-            method= RequestMethod.GET,
+            method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<GetTextsResponseBody> getTextMessages(@RequestParam String param) {
+    public ResponseEntity<TextsResponseEnvelope> getTextMessages(@RequestBody String param) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
         GetTextsRequestBody getTextsRequestBody = null;
@@ -329,7 +371,9 @@ public class InciCrowdController {
             e.printStackTrace();
 
         }
-        return new ResponseEntity<GetTextsResponseBody>(response, HttpStatus.OK);
+        TextsResponseEnvelope textsResponseEnvelope = new TextsResponseEnvelope();
+        textsResponseEnvelope.setGetTextsResponseBody(response);
+        return new ResponseEntity<>(textsResponseEnvelope, HttpStatus.OK);
     }
 
 
@@ -352,7 +396,7 @@ public class InciCrowdController {
             textDAO.saveText(putTextRequestBody.getPutText());
 
             //forward to activemq
-            publishToTopic("IMPRESS/InciCrowd/TextMessaging",
+            publishToTopic("IMPRESS.InciCrowd.TextMessaging",
                     CapUpdateBusMessage.pushTextMessage(putTextRequestBody.getPutText()));
         } catch (SQLException e) {
             e.printStackTrace();

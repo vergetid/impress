@@ -53,9 +53,10 @@ public class NuggetDAOImpl implements NuggetDAO {
             String nugget = soapResponse.getSOAPBody().getElementsByTagName("nugget").item(0).getTextContent();
             SOAPMessage sickevoSoapMessage = 
             		LogevoCallsEnvelopeFactory.createSickevoFullRequest(nugget, "0", timeDiff);
-            SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	
-            System.out.println("NuggetDAOImpl: initiatePatient: SICKEVO RETURNED WITH:");
-            LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
+            SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);
+			System.out.println("NuggetDAOImpl: initiatePatient: SICKEVO RETURNED");
+            //System.out.println("NuggetDAOImpl: initiatePatient: SICKEVO RETURNED WITH:");
+            //LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
             nugget = sickevoSoapResponse.getSOAPBody().getElementsByTagName("nugget").item(0).getTextContent();
             patient.setNugget(nugget);
             patient.setAsset_id("0");
@@ -101,10 +102,10 @@ public class NuggetDAOImpl implements NuggetDAO {
             				patient.getNugget(), 
             				patient.getAsset_id(), 
             				DateUtils.millisToHours(deltaT));
-            SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	
-            System.out.println("NuggetDAOImpl: updatePatient: SICKEVO RETURNED WITH:");
-            LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
-            
+            SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);
+            //System.out.println("NuggetDAOImpl: updatePatient: SICKEVO RETURNED WITH:");
+            //LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
+			System.out.println("NuggetDAOImpl: updatePatient: SICKEVO RETURNED");
             String nugget = sickevoSoapResponse.getSOAPBody().getElementsByTagName("nugget").item(0).getTextContent();
             patient.setNugget(nugget);
             patient.setAsset_id(sickevoAsset);
@@ -134,9 +135,10 @@ public class NuggetDAOImpl implements NuggetDAO {
 	            		LogevoCallsEnvelopeFactory.createGaugerFullrequest(
 	            				patient.getNugget(), symptomId, symptom.getValue());
 	            SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	
-	            System.out.println("NuggetDAOImpl: updatePatient: GAUGER RETURNED WITH:");
-	            LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
-	            
+	            //System.out.println("NuggetDAOImpl: updatePatient: GAUGER RETURNED WITH:");
+	            //LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
+				System.out.println("NuggetDAOImpl: updatePatientWithSymptoms: SICKEVO RETURNED");
+
 	            String nugget = sickevoSoapResponse.getSOAPBody().getElementsByTagName("nugget").item(0).getTextContent();
 	            patient.setNugget(nugget);
 	            patientDAO.updatePatient(patient);
@@ -157,8 +159,9 @@ public class NuggetDAOImpl implements NuggetDAO {
 	        SOAPMessage sickevoSoapMessage;			
 			sickevoSoapMessage = LogevoCallsEnvelopeFactory.createStatscoringRequest(pps);
 			SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	
-            System.out.println("NuggetDAOImpl: updatePatient: StatScoring RETURNED WITH:");
-            LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);	
+            //System.out.println("NuggetDAOImpl: updatePatient: StatScoring RETURNED WITH:");
+            //LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
+			System.out.println("NuggetDAOImpl: updatePatientStatScoring: SICKEVO RETURNED");
             StatsScoring statsScoring = new StatsScoring();
             statsScoring.setEtd(sickevoSoapResponse.getSOAPBody().getElementsByTagName("etd").item(0).getTextContent());
             statsScoring.setGcs(sickevoSoapResponse.getSOAPBody().getElementsByTagName("gcs").item(0).getTextContent());
@@ -180,9 +183,10 @@ public class NuggetDAOImpl implements NuggetDAO {
             SOAPMessage sickevoSoapMessage = 
             		LogevoCallsEnvelopeFactory.createExposePPSRequest(nugget);
             SOAPMessage sickevoSoapResponse = soapConnection.call(sickevoSoapMessage, url);	
-            System.out.println("NuggetDAOImpl: updatePatient: ExposePPS RETURNED WITH:");
-            LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
-            PPS pps = new PPS();
+           // System.out.println("NuggetDAOImpl: updatePatient: ExposePPS RETURNED WITH:");
+            //LogevoCallsEnvelopeFactory.printSOAPResponse(sickevoSoapResponse);
+			System.out.println("NuggetDAOImpl: getPPSFromNugget: SICKEVO RETURNED");
+			PPS pps = new PPS();
             pps.setX_A(sickevoSoapResponse.getSOAPBody().getElementsByTagName("x_A").item(0).getTextContent());
             pps.setX_B1(sickevoSoapResponse.getSOAPBody().getElementsByTagName("x_B1").item(0).getTextContent());
             pps.setX_B2(sickevoSoapResponse.getSOAPBody().getElementsByTagName("x_B2").item(0).getTextContent());
