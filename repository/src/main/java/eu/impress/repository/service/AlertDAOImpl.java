@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 /**
@@ -56,10 +57,27 @@ public class AlertDAOImpl implements AlertDAO{
             ps.setString(3, alert.getSender());
             ps.setString(4, alert.getHeadline());
             ps.setString(5, alert.getDescription());
-            ps.setString(6, alert.getArea());
+            //ps.setString(6, alert.getArea());
             Point centroid = Util.calculateCentroidFromCircleString(alert.getArea());
             ps.setDouble(7, centroid.getX());
             ps.setDouble(8, centroid.getY());
+            Point topLeft = new Point();
+            Point topRight = new Point();
+            Point bottomRight = new Point();
+            Point bottomLeft = new Point();
+            topLeft.setX(centroid.getX() - 1.0);
+            topLeft.setY(centroid.getY() + 1.0);
+            topRight.setX(centroid.getX() + 1.0);
+            topRight.setY(centroid.getY() + 1.0);
+            bottomRight.setX(centroid.getX() + 1.0);
+            bottomRight.setY(centroid.getY() - 1.0);
+            bottomLeft.setX(centroid.getX() - 1.0);
+            bottomLeft.setY(centroid.getY() - 1.0);
+            String area = Double.toString(topLeft.getX()) + "," + Double.toString(topLeft.getY());
+            area += " " + Double.toString(topRight.getX()) + "," + Double.toString(topRight.getY());
+            area += " " + Double.toString(bottomRight.getX()) + "," + Double.toString(bottomRight.getY());
+            area += " " + Double.toString(bottomLeft.getX()) + "," + Double.toString(bottomLeft.getY());
+            ps.setString(6, "<polygon>"+area+"</polygon>");
             ps.executeUpdate();
             ps.close();
 
