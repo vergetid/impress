@@ -20,7 +20,8 @@ public class ObservationDAOImpl implements ObservationDAO{
     //@Value("${spring.datasource.username}")
     private String user = "root";
     //@Value("${spring.datasource.password}")
-    private String password = "merootme";
+    //private String password = "merootme";
+    private String password = "1q2w3e";
     //@Value("${spring.datasource.driver-class-name}")
     private String driver = "com.mysql.jdbc.Driver";
 

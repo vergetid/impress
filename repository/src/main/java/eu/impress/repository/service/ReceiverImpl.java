@@ -55,7 +55,7 @@ public class ReceiverImpl {
 	AlertDAO alertDAO;
 	@Autowired
 	private ApplicationContext ctx;
-	@JmsListener(destination = "IMPRESS.IncidentMgmt.CAPAlerts", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
+	@JmsListener(destination = "IMPRESS.IncidentMgmt.CAPAlerts", containerFactory = "alertJmsContainerFactory", subscription = "intl-89824")
 	public void receivCAP(String message) {
 		String alertID;
 		String headline;
