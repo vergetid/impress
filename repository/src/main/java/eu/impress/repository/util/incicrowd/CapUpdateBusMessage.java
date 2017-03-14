@@ -13,6 +13,21 @@ import java.util.zip.CRC32;
  * Created by jim on 24/1/2017.
  */
 public class CapUpdateBusMessage {
+    public static ByteBuffer removeAlert(String alertId) {
+        ByteBuffer messageToSend = ByteBuffer.allocate(109);
+        messageToSend.order(ByteOrder.LITTLE_ENDIAN);
+        messageToSend.put((byte) 11);
+
+        byte[] stringBytes = alertId.getBytes();
+        byte[] dataBytes = new byte[100];
+        System.arraycopy(stringBytes, 0, dataBytes,0, Math.min(stringBytes.length, dataBytes.length));
+        messageToSend.put(dataBytes);
+
+        CRC32 crc = new CRC32();
+        crc.update(messageToSend.array(), 0, messageToSend.position());
+        messageToSend.putLong(crc.getValue());
+        return messageToSend;
+    }
     public static ByteBuffer pushAlert(Alert alert) {
         ByteBuffer messageToSend = ByteBuffer.allocate(121);
         messageToSend.order(ByteOrder.LITTLE_ENDIAN);

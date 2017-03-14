@@ -57,6 +57,15 @@ public class InciCrowdController {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(eu.impress.rest.api.InciCrowdController.class);
 
     @RequestMapping(
+            value="/deleteAlert",
+            method= RequestMethod.POST,
+            produces= MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Void> deleteAlert(@PathVariable String alertId) {
+        publishToTopic("IMPRESS.InciCrowd.Alert", CapUpdateBusMessage.removeAlert(alertId));
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+    @RequestMapping(
             value="/getAlert",
             method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
