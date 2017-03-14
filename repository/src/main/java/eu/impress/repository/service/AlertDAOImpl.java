@@ -73,11 +73,11 @@ public class AlertDAOImpl implements AlertDAO{
             bottomRight.setY(centroid.getY() - 1.0);
             bottomLeft.setX(centroid.getX() - 1.0);
             bottomLeft.setY(centroid.getY() - 1.0);
-            String area = Double.toString(topLeft.getX()) + "," + Double.toString(topLeft.getY());
-            area += " " + Double.toString(topRight.getX()) + "," + Double.toString(topRight.getY());
-            area += " " + Double.toString(bottomRight.getX()) + "," + Double.toString(bottomRight.getY());
-            area += " " + Double.toString(bottomLeft.getX()) + "," + Double.toString(bottomLeft.getY());
-            ps.setString(6, "<polygon>"+area+"</polygon>");
+            String area = Double.toString(topLeft.getY()) + " " + Double.toString(topLeft.getX());
+            area += "," + Double.toString(topRight.getY()) + " " + Double.toString(topRight.getX());
+            area += "," + Double.toString(bottomRight.getY()) + " " + Double.toString(bottomRight.getX());
+            area += "," + Double.toString(bottomLeft.getY()) + " " + Double.toString(bottomLeft.getX());
+            ps.setString(6, "POLYGON (("+area+"))");
             ps.executeUpdate();
             ps.close();
 
@@ -177,5 +177,39 @@ public class AlertDAOImpl implements AlertDAO{
         getAlertsForRegionResponseBody.setResponse("SUCCESS");
         getAlertsForRegionResponseBody.setAlerts(getAlertsForRegionList);
         return getAlertsForRegionResponseBody;
+    }
+
+    @Override
+    public void deleteAlert(String alertID) throws SQLException {
+        try {
+            Class.forName(driver);
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Connection connection = DriverManager
+                .getConnection(url,user, password);
+
+        String sql = "DELETE FROM Alert where alertID = ?";
+                
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, alertID);
+            ps.executeUpdate();
+            ps.close();
+        
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {}
+            }
+        }
+        return;
+        
     }
 }

@@ -13,5 +13,6 @@ import java.sql.SQLException;
 public interface AlertDAO {
     public void storeAlert(Alert alert) throws SQLException;
     public GetAlertResponseBody getAlert(String alertID)  throws SQLException;
+    public void deleteAlert(String alertID) throws SQLException;
     GetAlertsForRegionResponseBody getAlertsForRegion(GetAlertsForRegion getAlertsForRegion) throws SQLException;
 }
