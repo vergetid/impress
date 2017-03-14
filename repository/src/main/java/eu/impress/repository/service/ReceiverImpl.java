@@ -17,7 +17,7 @@ public class ReceiverImpl {
 	@Autowired
 	private ApplicationContext ctx;
 
-	@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "alertJmsContainerFactory", subscription = "intl-89824")
+	@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
 	public void receiveMessage(String message) {
 		patevoCall.patevoLoop(message);
 

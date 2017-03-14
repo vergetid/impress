@@ -40,8 +40,8 @@ public class NuggetServiceImpl implements NuggetService
     private static final Logger log = LoggerFactory.getLogger(eu.impress.repository.service.NuggetServiceImpl.class);
     private String queryTemplate;
     
-    @Value("${sparql.endpoint}")
-    private String sparqlEndpoint;
+    //@Value("${sparql.endpoint}")
+    //private String sparqlEndpoint;
     
     @Autowired
     PatientDAO patientDAO;
@@ -71,7 +71,7 @@ public class NuggetServiceImpl implements NuggetService
     @Override
     public NuggetDescription retrieveNuggetByPatientPseudoID(String patientPseudoID)
     {
-	ApplicationContext appContext = new ClassPathXmlApplicationContext();
+	/*ApplicationContext appContext = new ClassPathXmlApplicationContext();
 	org.springframework.core.io.Resource resource = appContext.getResource(
                 "classpath:sparqlQueries/RetrieveLatestNuggetLink");
         
@@ -110,8 +110,8 @@ public class NuggetServiceImpl implements NuggetService
             //nugget.setTimeStamp(time.getString());
             return nugget;
         } else {
-        return null;
-        }			
+        ret*/
+	    return null;
     }
 
     @Override
@@ -129,6 +129,7 @@ public class NuggetServiceImpl implements NuggetService
 
     private void createNewRecord(NuggetDescription nugget)
     {
+        /*
             ApplicationContext appContext = new ClassPathXmlApplicationContext();
             org.springframework.core.io.Resource resource = appContext.getResource(
                     "classpath:sparqlQueries/InsertNewNuggetRecord");
@@ -161,12 +162,12 @@ public class NuggetServiceImpl implements NuggetService
             UpdateRequest update = UpdateFactory.create(sparulQuery);
             UpdateProcessRemote riStore = (UpdateProcessRemote) 
             UpdateExecutionFactory.createRemote(update, sparqlEndpoint);
-            riStore.execute();
+            riStore.execute();*/
     }
 
     private void appendNewRecord(NuggetDescription nugget)
     {
-            ApplicationContext appContext = new ClassPathXmlApplicationContext();
+            /*ApplicationContext appContext = new ClassPathXmlApplicationContext();
             org.springframework.core.io.Resource resource = appContext.getResource(
                     "classpath:sparqlQueries/InsertNuggetIntoExistingRecord");
 
@@ -196,6 +197,6 @@ public class NuggetServiceImpl implements NuggetService
             UpdateRequest update = UpdateFactory.create(sparulQuery);
             UpdateProcessRemote riStore = (UpdateProcessRemote) 
             UpdateExecutionFactory.createRemote(update, sparqlEndpoint);
-            riStore.execute();
+            riStore.execute();*/
     }
 }
