@@ -120,7 +120,7 @@ public class EDXLlib {
         vstype.setExplicitAddressScheme("urn");
         //explicitAddressValue.add("urn://agency/keelpno");
         //explicitAddressValue.add("urn://me.gov.incimag");
-        explicitAddressValue.add("urn://bg.gov.ministry.health");
+        explicitAddressValue.add("urn://bg.gov.ministry.health.112");
         vstype.setExplicitAddressValue(explicitAddressValue);
         explicitAddress.add(vstype);
         ed.setExplicitAddress(explicitAddress);
