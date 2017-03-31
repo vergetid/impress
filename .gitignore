@@ -2,3 +2,4 @@ target
 nbproject
 *.class
 *.iml
+.idea/workspace.xml
