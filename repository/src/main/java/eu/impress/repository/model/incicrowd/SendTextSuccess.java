@@ -5,8 +5,8 @@ package eu.impress.repository.model.incicrowd;
  */
 public class SendTextSuccess {
     public static final String PUT_SUCCESS= "{" +
-            "\"sendTextMessage:\": {"+
-            "\"response:\": \"SUCCESS\"" +
+            "\"sendTextMessage\": {"+
+            "\"response\": \"SUCCESS\"" +
             "}" +
             "}";
 }

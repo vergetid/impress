@@ -5,8 +5,8 @@ package eu.impress.repository.model.incicrowd;
  */
 public class SendTextError {
     public static final String PUT_ERROR= "{" +
-            "\"sendTextMessage:\": {"+
-            "\response:\": \"ERROR\"" +
+            "\"sendTextMessage\": {"+
+            "\response\": \"ERROR\"" +
             "}" +
             "}";
 }

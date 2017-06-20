@@ -52,9 +52,19 @@ import org.xml.sax.SAXException;
 @Component
 public class ReceiverImpl {
 	@Autowired
+	PatevoCall patevoCall;
+	@Autowired
 	AlertDAO alertDAO;
 	@Autowired
 	private ApplicationContext ctx;
+
+	@JmsListener(destination = "IMPRESS.IncidentMgmt.TrackingPatients", containerFactory = "myJmsContainerFactory", subscription = "intl-89823")
+	public void receiveMessage(String message) {
+		patevoCall.patevoLoop(message);
+
+		FileSystemUtils.deleteRecursively(new File("activemq-data"));
+	}
+
 	@JmsListener(destination = "IMPRESS.IncidentMgmt.CAPAlerts", containerFactory = "alertJmsContainerFactory", subscription = "intl-89824")
 	public void receivCAP(String message) {
 		String alertID;

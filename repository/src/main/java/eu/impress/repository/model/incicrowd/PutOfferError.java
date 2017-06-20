@@ -5,8 +5,8 @@ package eu.impress.repository.model.incicrowd;
  */
 public class PutOfferError {
     public static final String PUT_ERROR= "{" +
-            "\"putObservation:\": {"+
-            "\response:\": \"ERROR\"" +
+            "\"putOffer\": {"+
+            "\"response\": \"ERROR\"" +
             "}" +
             "}";
 }

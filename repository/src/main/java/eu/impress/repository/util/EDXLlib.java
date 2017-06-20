@@ -69,12 +69,12 @@ public class EDXLlib {
         ed.setDistributionType(TypeValues.REPORT);
         ed.setCombinedConfidentiality("Unclassified");
         
-//        vstype.setExplicitAddressScheme("urn");
-//        //explicitAddressValue.add("urn://agency/keelpno");
-//        explicitAddressValue.add("urn://me.gov.incimag");
-//        vstype.setExplicitAddressValue(explicitAddressValue);
-//        explicitAddress.add(vstype);
-//        ed.setExplicitAddress(explicitAddress);
+        vstype.setExplicitAddressScheme("urn");
+        //explicitAddressValue.add("urn://agency/keelpno");
+        explicitAddressValue.add("urn://bg.gov.ministry.health");
+        vstype.setExplicitAddressValue(explicitAddressValue);
+        explicitAddress.add(vstype);
+        ed.setExplicitAddress(explicitAddress);
       
         xt.setEmbeddedXMLContent(null);
         ct.setXmlContent(xt);

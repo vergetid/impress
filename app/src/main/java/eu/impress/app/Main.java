@@ -39,6 +39,17 @@ import eu.impress.repository.service.SimulateReceiveMessage;
 public class Main extends SpringBootServletInitializer {
 
     @Bean
+    JmsListenerContainerFactory<?> myJmsContainerFactory(ConnectionFactory connectionFactory) {
+        SimpleJmsListenerContainerFactory factory = new SimpleJmsListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setPubSubDomain(true);
+        factory.setReplyPubSubDomain(true);
+        factory.setSubscriptionDurable(true);
+        factory.setClientId("intl-89823");
+        return factory;
+    }
+
+    @Bean
     JmsListenerContainerFactory<?> alertJmsContainerFactory(ConnectionFactory connectionFactory) {
         SimpleJmsListenerContainerFactory factory = new SimpleJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);

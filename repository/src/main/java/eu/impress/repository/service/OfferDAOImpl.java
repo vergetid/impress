@@ -21,8 +21,8 @@ public class OfferDAOImpl implements OfferDAO {
     //@Value("${spring.datasource.username}")
     private String user = "root";
     //@Value("${spring.datasource.password}")
-    //private String password = "merootme";
-    private String password = "1q2w3e";
+    private String password = "merootme";
+    //private String password = "1q2w3e";
     //@Value("${spring.datasource.driver-class-name}")
     private String driver = "com.mysql.jdbc.Driver";
     @Override
@@ -96,7 +96,7 @@ public class OfferDAOImpl implements OfferDAO {
             while (rs.next()) {
                 PutOffer offer = new PutOffer();
                 if (DistanceUtil.distance(getOffersForRegion.getLatitude(),rs.getDouble("latitude"),
-                        getOffersForRegion.getLatitude(), rs.getDouble("longitude")) <= getOffersForRegion.getRadius()) {
+                        getOffersForRegion.getLongitude(), rs.getDouble("longitude")) <= getOffersForRegion.getRadius()) {
                     offer.setAccessKey(rs.getString("accessKey"));
                     offer.setCategory(rs.getString("category"));
                     offer.setDescription(rs.getString("description"));

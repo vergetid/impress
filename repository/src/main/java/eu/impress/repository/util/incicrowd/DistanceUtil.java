@@ -4,8 +4,8 @@ package eu.impress.repository.util.incicrowd;
  * Created by jim on 17/1/2017.
  */
 public class DistanceUtil {
-    public static Double distance(Double lat1, Double long1, Double lat2, Double long2) {
-        Double earth_radius = 6371.0;
+    public static Double distance(Double lat1, Double lat2, Double long1, Double long2) {
+        Double earth_radius = 6371000.0;
         Double dLat = Math.toRadians(lat2 - lat1);
         Double dLon = Math.toRadians(long2 - long1);
         Double a =

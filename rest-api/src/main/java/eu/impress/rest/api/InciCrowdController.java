@@ -229,7 +229,7 @@ public class InciCrowdController {
     }
 
     @RequestMapping(
-            value="/getOffers",
+            value="/getOffer",
             method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
@@ -283,9 +283,9 @@ public class InciCrowdController {
             offerDAO.saveOffer(putOfferRequestBody.getPutOffer());
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity<String>(PutObservationError.PUTOBSERVATION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(PutOfferError.PUT_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<String>(PutObservationSuccess.PUTOBSERVATION_SUCCESS, HttpStatus.OK);
+        return new ResponseEntity<String>(PutOfferSuccess.PUT_SUCCESS, HttpStatus.OK);
     }
 
     @RequestMapping(
@@ -300,7 +300,7 @@ public class InciCrowdController {
     }
 
     @RequestMapping(
-            value="/getNeeds",
+            value="/getNeed",
             method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )
@@ -363,7 +363,7 @@ public class InciCrowdController {
     }
 
     @RequestMapping(
-            value="/getTextMessages",
+            value="/getTextMessage",
             method= RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_VALUE
     )

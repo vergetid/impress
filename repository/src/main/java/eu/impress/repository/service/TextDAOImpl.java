@@ -20,8 +20,8 @@ public class TextDAOImpl implements TextDAO {
     //@Value("${spring.datasource.username}")
     private String user = "root";
     //@Value("${spring.datasource.password}")
-    //private String password = "merootme";
-    private String password = "1q2w3e";
+    private String password = "merootme";
+    //1private String password = "1q2w3e";
     //@Value("${spring.datasource.driver-class-name}")
     private String driver = "com.mysql.jdbc.Driver";
 

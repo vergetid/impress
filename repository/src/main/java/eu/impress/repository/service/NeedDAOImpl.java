@@ -21,8 +21,8 @@ public class NeedDAOImpl implements NeedDAO {
     //@Value("${spring.datasource.username}")
     private String user = "root";
     //@Value("${spring.datasource.password}")
-    //private String password = "merootme";
-    private String password = "1q2w3e";
+    private String password = "merootme";
+    //private String password = "1q2w3e";
     //@Value("${spring.datasource.driver-class-name}")
     private String driver = "com.mysql.jdbc.Driver";
     @Override
@@ -88,7 +88,7 @@ public class NeedDAOImpl implements NeedDAO {
         Connection connection = DriverManager
                 .getConnection(url,user, password);
 
-        String sql = "SELECT * FROM Offer";
+        String sql = "SELECT * FROM Need";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -96,7 +96,7 @@ public class NeedDAOImpl implements NeedDAO {
             while (rs.next()) {
                 PutNeed need = new PutNeed();
                 if (DistanceUtil.distance(getNeedsForRegion.getLatitude(),rs.getDouble("latitude"),
-                        getNeedsForRegion.getLatitude(), rs.getDouble("longitude")) <= getNeedsForRegion.getRadius()) {
+                        getNeedsForRegion.getLongitude(), rs.getDouble("longitude")) <= getNeedsForRegion.getRadius()) {
                     need.setAccessKey(rs.getString("accessKey"));
                     need.setCategory(rs.getString("category"));
                     need.setDescription(rs.getString("description"));
